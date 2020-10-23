@@ -1,5 +1,8 @@
+import sbt.Keys.libraryDependencies
+
 val commonSettings = Seq(
-  scalaVersion := "2.12.1"
+  scalaVersion := "2.12.1",
+  libraryDependencies += "org.scalatest" %% "scalatest" % "3.2.0" % "test"
 )
 
 lazy val root = (project in file("."))
