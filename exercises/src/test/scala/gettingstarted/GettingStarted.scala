@@ -1,3 +1,5 @@
+package gettingstarted
+
 import fpinscala.gettingstarted.MyModule.fib
 import fpinscala.gettingstarted.PolymorphicFunctions.{compose, curry, isSorted, uncurry}
 import org.scalatest.flatspec.AnyFlatSpec
