@@ -4,7 +4,7 @@ import fpinscala.gettingstarted.MyModule.fib
 import fpinscala.gettingstarted.PolymorphicFunctions.{compose, curry, isSorted, uncurry}
 import org.scalatest.flatspec.AnyFlatSpec
 
-class GettingStarted extends AnyFlatSpec {
+class GettingStartedTest extends AnyFlatSpec {
   "fib" should "handle positive integers" in {
     assert(fib(5) == 5)
   }
