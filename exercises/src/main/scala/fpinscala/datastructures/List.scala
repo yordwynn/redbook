@@ -81,7 +81,7 @@ object List { // `List` companion object. Contains functions for creating and wo
     (l, n) match {
       case (_, 0)          => l
       case (Nil, _)        => Nil
-      case (Cons(h, t), _) => drop(t, n - 1)
+      case (Cons(_, t), _) => drop(t, n - 1)
     }
   }
 
