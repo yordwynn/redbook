@@ -6,7 +6,12 @@ import fpinscala.datastructures.List.{
   foldLeft,
   foldRight,
   init,
+  length2,
+  product2,
+  product3,
   setHead,
+  sum2,
+  sum3,
   tail
 }
 import org.scalatest.flatspec.AnyFlatSpec
@@ -145,5 +150,11 @@ class ListTest extends AnyFlatSpec {
         foldRight(List("a", "b", "c"), "")(_ + _),
       "foldLeft should compute the same concatenation value as foldRight"
     )
+  }
+
+  "list" should "handle sum, product, and length via foldLeft" in {
+    assert(sum3(List(1, 2, 3)) == sum2(List(1, 2, 3)))
+    assert(product3(List(1, 2, 3)) == product2(List(1, 2, 3)))
+    assert(length2(List(1, 2, 3)) == List.length(List(1, 2, 3)))
   }
 }
