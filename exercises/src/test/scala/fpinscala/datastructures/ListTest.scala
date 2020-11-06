@@ -1,6 +1,6 @@
 package fpinscala.datastructures
 
-import fpinscala.datastructures.List.{drop, setHead, tail}
+import fpinscala.datastructures.List.{drop, dropWhile, setHead, tail}
 import org.scalatest.flatspec.AnyFlatSpec
 
 class ListTest extends AnyFlatSpec {
@@ -60,6 +60,38 @@ class ListTest extends AnyFlatSpec {
     assert(
       drop(List(1, 2, 3), 10) == Nil,
       "drop of too many elements from list is empty list"
+    )
+  }
+
+  "list" should "handle dropWhile" in {
+    val positive = (x: Int) => x > 0
+    assert(
+      dropWhile(Nil, positive) == Nil,
+      "dropWhile of empty list should be empty list"
+    )
+    assert(
+      dropWhile(List(1), positive) == Nil,
+      "dropWhile of list with single valid element should be empty list"
+    )
+    assert(
+      dropWhile(List(1, 2, 3, 4), positive) == Nil,
+      "dropWhile of list with only valid elements should be empty list"
+    )
+    assert(
+      dropWhile(List(1, 2, -3, 4), positive) == List(-3, 4),
+      "dropWhile of list with two leading valid elements should be list without leading elements"
+    )
+    assert(
+      dropWhile(List(1, -2, -3, 4), positive) == List(-2, -3, 4),
+      "dropWhile of list with one leading valid element should be list without leading element"
+    )
+    assert(
+      dropWhile(List(-1, -2, -3, 4), positive) == List(-1, -2, -3, 4),
+      "dropWhile of list with no leading valid elements should be same list"
+    )
+    assert(
+      dropWhile(List(-1, -2, -3, -4), positive) == List(-1, -2, -3, -4),
+      "dropWhile of list with no valid elements should be Nil"
     )
   }
 }
