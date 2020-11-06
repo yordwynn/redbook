@@ -1,6 +1,13 @@
 package fpinscala.datastructures
 
-import fpinscala.datastructures.List.{drop, dropWhile, init, setHead, tail}
+import fpinscala.datastructures.List.{
+  drop,
+  dropWhile,
+  foldRight,
+  init,
+  setHead,
+  tail
+}
 import org.scalatest.flatspec.AnyFlatSpec
 
 class ListTest extends AnyFlatSpec {
@@ -104,6 +111,12 @@ class ListTest extends AnyFlatSpec {
     assert(
       init(List(1, 2, 3)) == List(1, 2),
       "init of list should not have last element"
+    )
+  }
+
+  "foldRight" should "return the same list" in {
+    assert(
+      foldRight(List(1, 2, 3), Nil: List[Int])(Cons(_, _)) == List(1, 2, 3)
     )
   }
 }
