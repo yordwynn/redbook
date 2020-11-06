@@ -1,6 +1,6 @@
 package fpinscala.datastructures
 
-import fpinscala.datastructures.List.{drop, dropWhile, setHead, tail}
+import fpinscala.datastructures.List.{drop, dropWhile, init, setHead, tail}
 import org.scalatest.flatspec.AnyFlatSpec
 
 class ListTest extends AnyFlatSpec {
@@ -92,6 +92,18 @@ class ListTest extends AnyFlatSpec {
     assert(
       dropWhile(List(-1, -2, -3, -4), positive) == List(-1, -2, -3, -4),
       "dropWhile of list with no valid elements should be Nil"
+    )
+  }
+
+  "list" should "handle init" in {
+    assert(init(Nil) == Nil, "init of empty list should be empty list")
+    assert(
+      init(List(3)) == Nil,
+      "init of single-element-list should be empty list"
+    )
+    assert(
+      init(List(1, 2, 3)) == List(1, 2),
+      "init of list should not have last element"
     )
   }
 }
