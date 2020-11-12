@@ -157,4 +157,8 @@ class ListTest extends AnyFlatSpec {
     assert(product3(List(1, 2, 3)) == product2(List(1, 2, 3)))
     assert(length2(List(1, 2, 3)) == List.length(List(1, 2, 3)))
   }
+
+  "list" should "handle reverse" in {
+    assert(List.reverse(List(1, 2, 3)) == List(3, 2, 1))
+  }
 }
