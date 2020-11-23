@@ -56,6 +56,10 @@ object List { // `List` companion object. Contains functions for creating and wo
       case Cons(x, xs) => f(x, foldRight(xs, z)(f))
     }
 
+  def foldRight2[A, B](as: List[A], z: B)(f: (A, B) => B): B = {
+    foldLeft(reverse(as), z)((b: B, a: A) => f(a, b))
+  }
+
   def sum2(ns: List[Int]): Int =
     foldRight(ns, 0)((x, y) => x + y)
 
@@ -109,6 +113,10 @@ object List { // `List` companion object. Contains functions for creating and wo
       case Nil        => z
       case Cons(h, t) => foldLeft(t, f(z, h))(f)
     }
+  }
+
+  def foldLeft2[A, B](l: List[A], z: B)(f: (B, A) => B): B = {
+    foldRight(l, (start: B) => start)((a, b) => b2 => b(f(b2, a)))(z)
   }
 
   def sum3(ns: List[Int]): Int =
