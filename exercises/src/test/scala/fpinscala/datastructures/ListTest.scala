@@ -1,6 +1,7 @@
 package fpinscala.datastructures
 
 import fpinscala.datastructures.List.{
+  append2,
   drop,
   dropWhile,
   foldLeft,
@@ -177,6 +178,12 @@ class ListTest extends AnyFlatSpec {
       foldRight(List(1, 2, 3), Nil: List[Int])((x, y) =>
         Cons(x, y)
       ) == foldRight2(List(1, 2, 3), Nil: List[Int])((x, y) => Cons(x, y))
+    )
+  }
+
+  "append2" should "append one list to the end of another" in {
+    assert(
+      append2(List(1, 2, 3), List(10, 20, 30)) == List(1, 2, 3, 10, 20, 30)
     )
   }
 }

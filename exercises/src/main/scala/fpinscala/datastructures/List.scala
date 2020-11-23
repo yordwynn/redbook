@@ -47,6 +47,10 @@ object List { // `List` companion object. Contains functions for creating and wo
       case Cons(h, t) => Cons(h, append(t, a2))
     }
 
+  def append2[A](a1: List[A], a2: List[A]): List[A] = {
+    foldLeft(reverse(a1), a2)((b, a) => Cons(a, b))
+  }
+
   def foldRight[A, B](
       as: List[A],
       z: B
