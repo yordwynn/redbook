@@ -2,6 +2,7 @@ package fpinscala.datastructures
 
 import fpinscala.datastructures.List.{
   append2,
+  concatenate,
   drop,
   dropWhile,
   foldLeft,
@@ -184,6 +185,18 @@ class ListTest extends AnyFlatSpec {
   "append2" should "append one list to the end of another" in {
     assert(
       append2(List(1, 2, 3), List(10, 20, 30)) == List(1, 2, 3, 10, 20, 30)
+    )
+  }
+
+  "list" should "handle concatenation" in {
+    assert(
+      concatenate(
+        List(
+          List(1, 2),
+          List(3, 4, 5),
+          List(6)
+        )
+      ) == List(1, 2, 3, 4, 5, 6)
     )
   }
 }
