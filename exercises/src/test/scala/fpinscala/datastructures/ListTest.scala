@@ -4,6 +4,7 @@ import fpinscala.datastructures.List.{
   addOne,
   append2,
   concatenate,
+  doubleToString,
   drop,
   dropWhile,
   foldLeft,
@@ -203,5 +204,9 @@ class ListTest extends AnyFlatSpec {
 
   "list" should "handle addOne" in {
     assert(addOne(List(1, 2, 3)) == List(2, 3, 4))
+  }
+
+  "list" should "handle doubleToString" in {
+    assert(doubleToString(List(1, 2, 3)) == List("1.0", "2.0", "3.0"))
   }
 }
