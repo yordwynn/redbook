@@ -1,6 +1,7 @@
 package fpinscala.datastructures
 
 import fpinscala.datastructures.List.{
+  addOne,
   append2,
   concatenate,
   drop,
@@ -198,5 +199,9 @@ class ListTest extends AnyFlatSpec {
         )
       ) == List(1, 2, 3, 4, 5, 6)
     )
+  }
+
+  "list" should "handle addOne" in {
+    assert(addOne(List(1, 2, 3)) == List(2, 3, 4))
   }
 }
