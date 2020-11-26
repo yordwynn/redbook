@@ -214,4 +214,10 @@ class ListTest extends AnyFlatSpec {
     assert(List.map(List(1, 2, 3))(_ + 1) == List(2, 3, 4))
     assert(List.map(List(1, 2, 3))(_.toString) == List("1", "2", "3"))
   }
+
+  "list" should "handle flatmap" in {
+    assert(
+      List.flatMap(List(1, 2, 3))(i => List(i, i)) == List(1, 1, 2, 2, 3, 3)
+    )
+  }
 }
