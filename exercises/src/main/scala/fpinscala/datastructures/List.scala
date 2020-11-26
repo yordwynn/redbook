@@ -135,22 +135,22 @@ object List { // `List` companion object. Contains functions for creating and wo
     foldLeft(l, Nil: List[A])((acc, a) => Cons(a, acc))
 
   def concatenate[A](ls: List[List[A]]): List[A] = {
-    foldRight(ls, Nil: List[A])(append)
+    foldRight2(ls, Nil: List[A])(append)
   }
 
   def addOne(ints: List[Int]): List[Int] = {
-    foldRight(ints, Nil: List[Int])((a, acc) => Cons(a + 1, acc))
+    foldRight2(ints, Nil: List[Int])((a, acc) => Cons(a + 1, acc))
   }
 
   def doubleToString(doubles: List[Double]): List[String] = {
-    foldRight(doubles, Nil: List[String])((a, acc) => Cons(a.toString, acc))
+    foldRight2(doubles, Nil: List[String])((a, acc) => Cons(a.toString, acc))
   }
 
   def map[A, B](l: List[A])(f: A => B): List[B] = {
-    foldRight(l, Nil: List[B])((a, acc) => Cons(f(a), acc))
+    foldRight2(l, Nil: List[B])((a, acc) => Cons(f(a), acc))
   }
 
   def flatMap[A, B](l: List[A])(f: A => List[B]): List[B] = {
-    foldRight(l, Nil: List[B])((a, acc) => append(f(a), acc))
+    foldRight2(l, Nil: List[B])((a, acc) => append(f(a), acc))
   }
 }
