@@ -7,6 +7,7 @@ import fpinscala.datastructures.List.{
   doubleToString,
   drop,
   dropWhile,
+  filterViaFlatmap,
   foldLeft,
   foldLeft2,
   foldRight,
@@ -223,5 +224,11 @@ class ListTest extends AnyFlatSpec {
 
   "list" should "handle filter" in {
     assert(List.filter(List(1, 2, 3, 4, 5, 6))(_ % 2 == 0) == List(2, 4, 6))
+  }
+
+  "list" should "handle filter vai flatmap" in {
+    assert(
+      filterViaFlatmap(List(1, 2, 3, 4, 5, 6))(_ % 2 == 0) == List(2, 4, 6)
+    )
   }
 }

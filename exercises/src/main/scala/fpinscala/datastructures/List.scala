@@ -1,5 +1,6 @@
 package fpinscala.datastructures
 
+import scala.List
 import scala.annotation.tailrec
 
 sealed trait List[+A] // `List` data type, parameterized on a type, `A`
@@ -168,5 +169,9 @@ object List { // `List` companion object. Contains functions for creating and wo
 
   def flatMap[A, B](l: List[A])(f: A => List[B]): List[B] = {
     foldRight2(l, Nil: List[B])((a, acc) => append(f(a), acc))
+  }
+
+  def filterViaFlatmap[A](as: List[A])(f: A => Boolean): List[A] = {
+    flatMap(as)(a => if (f(a)) List(a) else Nil)
   }
 }
