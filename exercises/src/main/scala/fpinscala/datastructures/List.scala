@@ -150,6 +150,22 @@ object List { // `List` companion object. Contains functions for creating and wo
     foldRight2(l, Nil: List[B])((a, acc) => Cons(f(a), acc))
   }
 
+  def filter[A](as: List[A])(f: A => Boolean): List[A] = {
+    val buf = collection.mutable.ListBuffer[A]()
+    @tailrec
+    def go(l: List[A]): Unit = {
+      l match {
+        case Nil => ()
+        case Cons(h, t) if f(h) =>
+          buf += h
+          go(t)
+        case Cons(_, t) => go(t)
+      }
+    }
+    go(as)
+    List(buf.toList: _*)
+  }
+
   def flatMap[A, B](l: List[A])(f: A => List[B]): List[B] = {
     foldRight2(l, Nil: List[B])((a, acc) => append(f(a), acc))
   }
