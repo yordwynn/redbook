@@ -19,7 +19,9 @@ import fpinscala.datastructures.List.{
   setHead,
   sum2,
   sum3,
-  tail
+  sumTwoLists,
+  tail,
+  zipWith
 }
 import org.scalatest.flatspec.AnyFlatSpec
 
@@ -229,6 +231,16 @@ class ListTest extends AnyFlatSpec {
   "list" should "handle filter vai flatmap" in {
     assert(
       filterViaFlatmap(List(1, 2, 3, 4, 5, 6))(_ % 2 == 0) == List(2, 4, 6)
+    )
+  }
+
+  "list" should "handle sum two lists" in {
+    assert(sumTwoLists(List(1, 2, 3), List(4, 5, 6)) == List(5, 7, 9))
+  }
+
+  "list" should "handle zipWith" in {
+    assert(
+      zipWith(List(1, 2, 3), List(4, 5, 6))((a, b) => a + b) == List(5, 7, 9)
     )
   }
 }

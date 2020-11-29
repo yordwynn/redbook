@@ -174,4 +174,20 @@ object List { // `List` companion object. Contains functions for creating and wo
   def filterViaFlatmap[A](as: List[A])(f: A => Boolean): List[A] = {
     flatMap(as)(a => if (f(a)) List(a) else Nil)
   }
+
+  def sumTwoLists(l1: List[Int], l2: List[Int]): List[Int] = {
+    (l1, l2) match {
+      case (_, Nil)                     => Nil
+      case (Nil, _)                     => Nil
+      case (Cons(h1, t1), Cons(h2, t2)) => Cons(h1 + h2, sumTwoLists(t1, t2))
+    }
+  }
+
+  def zipWith[A, B, C](as: List[A], bs: List[B])(f: (A, B) => C): List[C] = {
+    (as, bs) match {
+      case (_, Nil)                     => Nil
+      case (Nil, _)                     => Nil
+      case (Cons(ha, ta), Cons(hb, tb)) => Cons(f(ha, hb), zipWith(ta, tb)(f))
+    }
+  }
 }
