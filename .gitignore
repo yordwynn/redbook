@@ -10,3 +10,8 @@ project.vim
 .project
 .classpath
 .metadata/
+.metals/metals.h2.db
+.metals/metals.lock.db
+.gitignore
+.vscode/settings.json
+.metals/metals.log
