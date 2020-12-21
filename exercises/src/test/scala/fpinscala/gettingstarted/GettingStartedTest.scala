@@ -1,4 +1,4 @@
-package gettingstarted
+package fpinscala.gettingstarted
 
 import fpinscala.gettingstarted.MyModule.fib
 import fpinscala.gettingstarted.PolymorphicFunctions.{compose, curry, isSorted, uncurry}
