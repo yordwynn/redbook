@@ -21,7 +21,8 @@ import fpinscala.datastructures.List.{
   sum3,
   sumTwoLists,
   tail,
-  zipWith
+  zipWith,
+  hasSubsequence
 }
 import org.scalatest.flatspec.AnyFlatSpec
 
@@ -242,5 +243,11 @@ class ListTest extends AnyFlatSpec {
     assert(
       zipWith(List(1, 2, 3), List(4, 5, 6))((a, b) => a + b) == List(5, 7, 9)
     )
+  }
+
+  "list" should "handle hasSubsequence" in {
+    assert(hasSubsequence(List(1,2,3,4), List(1,2)))
+    assert(hasSubsequence(List(1,2,3,4), List(2,3)))
+    assert(hasSubsequence(List(1,2,3,4), List(4)))
   }
 }

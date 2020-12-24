@@ -190,4 +190,17 @@ object List { // `List` companion object. Contains functions for creating and wo
       case (Cons(ha, ta), Cons(hb, tb)) => Cons(f(ha, hb), zipWith(ta, tb)(f))
     }
   }
+
+  def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = {
+    @tailrec
+    def go(sup: List[A], sub: List[A]): Boolean = {
+      (sup, sub) match {
+        case (_, Nil) => true
+        case (Nil, _) => false
+        case (Cons(h1, t1), Cons(h2, t2)) if (h1 == h2) => go(t1, t2)
+        case (Cons(_, t), _) => go(t, sub)
+      }
+    }
+    go(sup, sub)
+  }
 }
