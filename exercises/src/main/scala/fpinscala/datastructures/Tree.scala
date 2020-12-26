@@ -30,4 +30,11 @@ object Tree {
 
         go(tree, 0)
     }
+
+    def map[A, B](tree: Tree[A])(f: A => B): Tree[B] = {
+        tree match {
+            case Leaf(value) => Leaf(f(value))
+            case Branch(left, right) => Branch(map(left)(f), map(right)(f))
+        }
+    }
 }
