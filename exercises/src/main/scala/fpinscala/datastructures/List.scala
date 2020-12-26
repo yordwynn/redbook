@@ -1,6 +1,5 @@
 package fpinscala.datastructures
 
-import scala.List
 import scala.annotation.tailrec
 
 sealed trait List[+A] // `List` data type, parameterized on a type, `A`
