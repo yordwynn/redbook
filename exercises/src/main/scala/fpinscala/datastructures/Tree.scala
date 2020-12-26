@@ -19,4 +19,15 @@ object Tree {
             case Branch(left, right) => maximum(left).max(maximum(right))
         }
     }
+
+    def depth[A](tree: Tree[A]): Int = {
+        def go(tr: Tree[A], dpth: Int): Int = {
+            tr match {
+                case Leaf(_) => dpth
+                case Branch(left, right) => go(left, dpth + 1).max(go(right, dpth + 1))
+            }
+        }
+
+        go(tree, 0)
+    }
 }
