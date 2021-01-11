@@ -1,29 +1,6 @@
 package fpinscala.datastructures
 
-import fpinscala.datastructures.List.{
-  addOne,
-  append2,
-  concatenate,
-  doubleToString,
-  drop,
-  dropWhile,
-  filterViaFlatmap,
-  foldLeft,
-  foldLeft2,
-  foldRight,
-  foldRight2,
-  init,
-  length2,
-  product2,
-  product3,
-  setHead,
-  sum2,
-  sum3,
-  sumTwoLists,
-  tail,
-  zipWith,
-  hasSubsequence
-}
+import fpinscala.datastructures.List.{addOne, append2, concatenate, doubleToString, drop, dropWhile, filterViaFlatmap, foldLeft, foldLeft2, foldRight, foldRight2, hasSubsequence, init, length2, product2, product3, setHead, sum2, sum3, sumTwoLists, tail, zipWith}
 import org.scalatest.flatspec.AnyFlatSpec
 
 class ListTest extends AnyFlatSpec {
@@ -46,43 +23,43 @@ class ListTest extends AnyFlatSpec {
   "list" should "handle drop" in {
     assert(
       drop(Nil, 0) == Nil,
-      "drop of zero elements from empty list is empty list"
+      "drop of zero elements from empty list is empty list",
     )
     assert(
       drop(Nil, 1) == Nil,
-      "drop of one element from empty list is empty list"
+      "drop of one element from empty list is empty list",
     )
     assert(
       drop(Nil, 10) == Nil,
-      "drop of many elements from empty list is empty list"
+      "drop of many elements from empty list is empty list",
     )
     assert(
       drop(List(3), 0) == List(3),
-      "drop of zero elements from single-element list is the list"
+      "drop of zero elements from single-element list is the list",
     )
     assert(
       drop(List(3), 1) == Nil,
-      "drop of one element from single-element list is empty list"
+      "drop of one element from single-element list is empty list",
     )
     assert(
       drop(List(3), 10) == Nil,
-      "drop of many elements from single-element list is empty list"
+      "drop of many elements from single-element list is empty list",
     )
     assert(
       drop(List(1, 2, 3), 0) == List(1, 2, 3),
-      "drop of zero elements from list is list"
+      "drop of zero elements from list is list",
     )
     assert(
       drop(List(1, 2, 3), 1) == List(2, 3),
-      "drop of one elements from list is list without 1st element"
+      "drop of one elements from list is list without 1st element",
     )
     assert(
       drop(List(1, 2, 3), 2) == List(3),
-      "drop of n elements from list is list without 1st n elements"
+      "drop of n elements from list is list without 1st n elements",
     )
     assert(
       drop(List(1, 2, 3), 10) == Nil,
-      "drop of too many elements from list is empty list"
+      "drop of too many elements from list is empty list",
     )
   }
 
@@ -90,31 +67,31 @@ class ListTest extends AnyFlatSpec {
     val positive = (x: Int) => x > 0
     assert(
       dropWhile(Nil, positive) == Nil,
-      "dropWhile of empty list should be empty list"
+      "dropWhile of empty list should be empty list",
     )
     assert(
       dropWhile(List(1), positive) == Nil,
-      "dropWhile of list with single valid element should be empty list"
+      "dropWhile of list with single valid element should be empty list",
     )
     assert(
       dropWhile(List(1, 2, 3, 4), positive) == Nil,
-      "dropWhile of list with only valid elements should be empty list"
+      "dropWhile of list with only valid elements should be empty list",
     )
     assert(
       dropWhile(List(1, 2, -3, 4), positive) == List(-3, 4),
-      "dropWhile of list with two leading valid elements should be list without leading elements"
+      "dropWhile of list with two leading valid elements should be list without leading elements",
     )
     assert(
       dropWhile(List(1, -2, -3, 4), positive) == List(-2, -3, 4),
-      "dropWhile of list with one leading valid element should be list without leading element"
+      "dropWhile of list with one leading valid element should be list without leading element",
     )
     assert(
       dropWhile(List(-1, -2, -3, 4), positive) == List(-1, -2, -3, 4),
-      "dropWhile of list with no leading valid elements should be same list"
+      "dropWhile of list with no leading valid elements should be same list",
     )
     assert(
       dropWhile(List(-1, -2, -3, -4), positive) == List(-1, -2, -3, -4),
-      "dropWhile of list with no valid elements should be Nil"
+      "dropWhile of list with no valid elements should be Nil",
     )
   }
 
@@ -122,11 +99,11 @@ class ListTest extends AnyFlatSpec {
     assert(init(Nil) == Nil, "init of empty list should be empty list")
     assert(
       init(List(3)) == Nil,
-      "init of single-element-list should be empty list"
+      "init of single-element-list should be empty list",
     )
     assert(
       init(List(1, 2, 3)) == List(1, 2),
-      "init of list should not have last element"
+      "init of list should not have last element",
     )
   }
 
@@ -145,20 +122,20 @@ class ListTest extends AnyFlatSpec {
   "list" should "handle foldLeft" in {
     assert(
       foldLeft(List(1, 2, 3, 4, 5), 0)(_ + _) ==
-        foldRight(List(1, 2, 3, 4, 5), 0)(_ + _),
-      "foldLeft should compute the same sum value as foldRight"
+      foldRight(List(1, 2, 3, 4, 5), 0)(_ + _),
+      "foldLeft should compute the same sum value as foldRight",
     )
 
     assert(
       foldLeft(List(1, 2, 3, 4, 5), 1)(_ * _) ==
-        foldRight(List(1, 2, 3, 4, 5), 1)(_ * _),
-      "foldLeft should compute the same product value as foldRight"
+      foldRight(List(1, 2, 3, 4, 5), 1)(_ * _),
+      "foldLeft should compute the same product value as foldRight",
     )
 
     assert(
       foldLeft(List("a", "b", "c"), "")(_ + _) ==
-        foldRight(List("a", "b", "c"), "")(_ + _),
-      "foldLeft should compute the same concatenation value as foldRight"
+      foldRight(List("a", "b", "c"), "")(_ + _),
+      "foldLeft should compute the same concatenation value as foldRight",
     )
   }
 
@@ -174,17 +151,13 @@ class ListTest extends AnyFlatSpec {
 
   "foldLeft2" should "reverse the list" in {
     assert(
-      foldLeft(List(1, 2, 3), Nil: List[Int])((x, y) =>
-        Cons(y, x)
-      ) == foldLeft2(List(1, 2, 3), Nil: List[Int])((x, y) => Cons(y, x))
+      foldLeft(List(1, 2, 3), Nil: List[Int])((x, y) => Cons(y, x)) == foldLeft2(List(1, 2, 3), Nil: List[Int])((x, y) => Cons(y, x))
     )
   }
 
   "foldRight2" should "not reverse the list" in {
     assert(
-      foldRight(List(1, 2, 3), Nil: List[Int])((x, y) =>
-        Cons(x, y)
-      ) == foldRight2(List(1, 2, 3), Nil: List[Int])((x, y) => Cons(x, y))
+      foldRight(List(1, 2, 3), Nil: List[Int])((x, y) => Cons(x, y)) == foldRight2(List(1, 2, 3), Nil: List[Int])((x, y) => Cons(x, y))
     )
   }
 
@@ -200,7 +173,7 @@ class ListTest extends AnyFlatSpec {
         List(
           List(1, 2),
           List(3, 4, 5),
-          List(6)
+          List(6),
         )
       ) == List(1, 2, 3, 4, 5, 6)
     )
@@ -246,8 +219,8 @@ class ListTest extends AnyFlatSpec {
   }
 
   "list" should "handle hasSubsequence" in {
-    assert(hasSubsequence(List(1,2,3,4), List(1,2)))
-    assert(hasSubsequence(List(1,2,3,4), List(2,3)))
-    assert(hasSubsequence(List(1,2,3,4), List(4)))
+    assert(hasSubsequence(List(1, 2, 3, 4), List(1, 2)))
+    assert(hasSubsequence(List(1, 2, 3, 4), List(2, 3)))
+    assert(hasSubsequence(List(1, 2, 3, 4), List(4)))
   }
 }
