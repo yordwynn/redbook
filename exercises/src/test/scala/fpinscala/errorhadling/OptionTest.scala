@@ -43,4 +43,14 @@ class OptionTest extends AnyFlatSpec {
     assert(Option.map2(Some(1), None: Option[Int])(_ + _) == None)
     assert(Option.map2(None: Option[Int], None: Option[Int])(_ + _) == None)
   }
+
+  "option" should "handle sequencce" in {
+    assert(Option.sequence(List(Some(1), None, Some(2))) == None)
+    assert(Option.sequence(List(Some(1), Some(2))) == Some(List(1, 2)))
+  }
+
+  "option" should "handle traverse" in {
+    assert(Option.traverse(List(0, 1, 2))(x => Option.Try(x + 1)) == Some(List(1, 2, 3)))
+    assert(Option.traverse(List(0, 1, 2))(x => Option.Try(1 / x)) == None)
+  }
 }

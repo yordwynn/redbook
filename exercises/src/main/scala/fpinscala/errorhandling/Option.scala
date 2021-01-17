@@ -29,12 +29,16 @@ sealed trait Option[+A] {
     flatMap(a => if (f(a)) this else None)
   }
 
-  def lift[A,B](f: A => B): Option[A] => Option[B] = (a: Option[A]) => a.map(f)
+  def lift[A, B](f: A => B): Option[A] => Option[B] = (a: Option[A]) => a.map(f)
 }
 case class Some[+A](get: A) extends Option[A]
 case object None extends Option[Nothing]
 
 object Option {
+  def Try[A](a: => A): Option[A] =
+    try Some(a)
+    catch { case e: Exception => None }
+
   def failingFn(i: Int): Int = {
     val y: Int = throw new Exception("fail!") // `val y: Int = ...` declares `y` as having type `Int`, and sets it equal to the right hand side of the `=`.
     try {
@@ -64,7 +68,11 @@ object Option {
     a.flatMap(sa => b.map(sb => f(sa, sb)))
   }
 
-  def sequence[A](a: List[Option[A]]): Option[List[A]] = ???
+  def sequence[A](a: List[Option[A]]): Option[List[A]] = {
+    a.foldLeft(Some(List.empty): Option[List[A]])((b, a) => map2(b, a)((lb, la) => lb.appended(la)))
+  }
 
-  def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] = ???
+  def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] = {
+    a.foldLeft(Some(List.empty): Option[List[B]])((b, a) => b.flatMap(bs => f(a).map(newB => bs.appended(newB))))
+  }
 }
