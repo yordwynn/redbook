@@ -73,6 +73,6 @@ object Option {
   }
 
   def traverse[A, B](a: List[A])(f: A => Option[B]): Option[List[B]] = {
-    a.foldLeft(Some(List.empty): Option[List[B]])((b, a) => b.flatMap(bs => f(a).map(newB => bs.appended(newB))))
+    a.foldLeft(Some(List.empty): Option[List[B]])((b, a) => map2(b, f(a))((lb, la) => lb.appended(la)))
   }
 }
