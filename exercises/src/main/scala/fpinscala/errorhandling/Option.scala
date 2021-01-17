@@ -28,6 +28,8 @@ sealed trait Option[+A] {
   def filter(f: A => Boolean): Option[A] = {
     flatMap(a => if (f(a)) this else None)
   }
+
+  def lift[A,B](f: A => B): Option[A] => Option[B] = (a: Option[A]) => a.map(f)
 }
 case class Some[+A](get: A) extends Option[A]
 case object None extends Option[Nothing]
@@ -58,7 +60,9 @@ object Option {
     mean(xs).flatMap(m => mean(xs.map(x => math.pow(x - m, 2))))
   }
 
-  def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = ???
+  def map2[A, B, C](a: Option[A], b: Option[B])(f: (A, B) => C): Option[C] = {
+    a.flatMap(sa => b.map(sb => f(sa, sb)))
+  }
 
   def sequence[A](a: List[Option[A]]): Option[List[A]] = ???
 
