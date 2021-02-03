@@ -26,7 +26,13 @@ trait Stream[+A] {
       }
   }
 
-  def drop(n: Int): Stream[A] = ???
+  def drop(n: Int): Stream[A] = {
+    this match {
+      case Empty => empty
+      case Cons(_, _) if (n == 0) => this
+      case Cons(h, t) => t().drop(n - 1)
+    }
+  }
 
   def takeWhile(p: A => Boolean): Stream[A] = ???
 
