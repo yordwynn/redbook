@@ -26,11 +26,11 @@ trait Stream[+A] {
       }
   }
 
-  def drop(n: Int): Stream[A] = {
+  @tailrec
+  final def drop(n: Int): Stream[A] = {
     this match {
-      case Empty => empty
-      case Cons(_, _) if (n == 0) => this
-      case Cons(h, t) => t().drop(n - 1)
+      case Cons(_, t) if n > 0 => t().drop(n - 1)
+      case _ => this
     }
   }
 
