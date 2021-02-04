@@ -41,7 +41,9 @@ trait Stream[+A] {
     }
   }
 
-  def forAll(p: A => Boolean): Boolean = ???
+  def forAll(p: A => Boolean): Boolean = {
+    foldRight(true)((a, b) => p(a) && b)
+  }
 
   def headOption: Option[A] = ???
 
