@@ -22,4 +22,10 @@ class StreamTest extends AnyFlatSpec {
     val stream = Stream.apply(1, 2, 3, 4, 5)
     assert(stream.takeWhile(a => a != 3).toList == List(1, 2))
   }
+
+    "Stream" should "handle forAll elements" in {
+    val stream = Stream.apply(1, 2, 3, 4, 5)
+    assert(stream.forAll(a => a < 10) == true)
+    assert(assert(stream.forAll(a => a != 3) == false))
+  }
 }
