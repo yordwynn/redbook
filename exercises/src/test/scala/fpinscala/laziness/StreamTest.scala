@@ -76,4 +76,8 @@ class StreamTest extends AnyFlatSpec {
   "Stream" should "handle from function" in {
     assert(Stream.from(3).take(2).toList == List(3, 4))
   }
+
+    "Stream" should "handle fibs function" in {
+    assert(Stream.fibs.take(6).toList == List(0, 1, 1, 2, 3, 5))
+  }
 }

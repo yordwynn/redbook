@@ -121,5 +121,12 @@ object Stream {
     cons(n, from(n + 1))
   }
 
+  def fibs: Stream[Int] = {
+    def nextFib(a: Int, b: Int): Stream[Int] =
+    cons(a, nextFib(b, a + b))
+
+    nextFib(0, 1)
+  }
+
   def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = ???
 }
