@@ -68,4 +68,12 @@ class StreamTest extends AnyFlatSpec {
     assert(stream.flatMap(x => Stream.apply(x, x)).toList == List(1, 1, 2, 2, 3, 3))
     assert(emptyStream.flatMap(x => Stream.apply(x, x)).toList == List.empty)
   }
+
+  "Stream" should "handle constant function" in {
+    assert(Stream.constant(3).take(2).toList == List(3, 3))
+  }
+
+  "Stream" should "handle from function" in {
+    assert(Stream.from(3).take(2).toList == List(3, 4))
+  }
 }
