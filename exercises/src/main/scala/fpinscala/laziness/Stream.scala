@@ -123,10 +123,15 @@ object Stream {
 
   def fibs: Stream[Int] = {
     def nextFib(a: Int, b: Int): Stream[Int] =
-    cons(a, nextFib(b, a + b))
+      cons(a, nextFib(b, a + b))
 
     nextFib(0, 1)
   }
 
-  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = ???
+  def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = {
+    f(z) match {
+      case None => empty
+      case Some(head -> state) => cons(head, unfold(state)(f))
+    }
+  }
 }
