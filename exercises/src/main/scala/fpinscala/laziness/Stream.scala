@@ -128,6 +128,10 @@ object Stream {
     nextFib(0, 1)
   }
 
+  def fibs2: Stream[Int] = {
+    unfold[Int, (Int, Int)]((0, 1))(s => Some((s._1, (s._2, s._1 + s._2))))
+  }
+
   def unfold[A, S](z: S)(f: S => Option[(A, S)]): Stream[A] = {
     f(z) match {
       case None => empty
