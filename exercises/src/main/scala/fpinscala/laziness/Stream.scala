@@ -113,12 +113,22 @@ object Stream {
 
   val ones: Stream[Int] = Stream.cons(1, ones)
 
+  def ones2: Stream[Int] = unfold(1)(s => Some((s, s)))
+
   def constant[A](a: A): Stream[A] = {
     cons(a, constant(a))
   }
 
+  def constant2[A](a: A): Stream[A] = {
+    unfold(a)(s => Some(s, s))
+  }
+
   def from(n: Int): Stream[Int] = {
     cons(n, from(n + 1))
+  }
+
+  def from2(n: Int): Stream[Int] = {
+    unfold(n)(s => Some((s, s + 1)))
   }
 
   def fibs: Stream[Int] = {

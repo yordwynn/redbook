@@ -73,15 +73,23 @@ class StreamTest extends AnyFlatSpec {
     assert(Stream.constant(3).take(2).toList == List(3, 3))
   }
 
+  "Stream" should "handle constant via unfold" in {
+    assert(Stream.constant2(3).take(2).toList == List(3, 3))
+  }
+
   "Stream" should "handle from function" in {
     assert(Stream.from(3).take(2).toList == List(3, 4))
+  }
+
+  "Stream" should "handle from via unfold" in {
+    assert(Stream.from2(3).take(2).toList == List(3, 4))
   }
 
   "Stream" should "handle fibs function" in {
     assert(Stream.fibs.take(6).toList == List(0, 1, 1, 2, 3, 5))
   }
 
-    "Stream" should "handle fibs via unfold" in {
+  "Stream" should "handle fibs via unfold" in {
     assert(Stream.fibs2.take(6).toList == List(0, 1, 1, 2, 3, 5))
   }
 
@@ -93,5 +101,9 @@ class StreamTest extends AnyFlatSpec {
     val finiteActual = Stream.unfold(0)(s => if (s < 5) Some((s, s + 1)) else None).toList
     val finiteExpected = List(0, 1, 2, 3, 4)
     assert(finiteExpected == finiteActual)
+  }
+
+  "Stream" should "handle ones via unfold" in {
+    assert(Stream.ones2.take(2).toList == List(1, 1))
   }
 }
