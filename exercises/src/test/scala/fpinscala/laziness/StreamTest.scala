@@ -4,66 +4,83 @@ import org.scalatest.flatspec.AnyFlatSpec
 
 class StreamTest extends AnyFlatSpec {
   "Stream" should "handle toList" in {
-    val stream = Stream.apply(1, 2, 3, 4)
+    val stream = Stream(1, 2, 3, 4)
     assert(stream.toList == List(1, 2, 3, 4))
   }
 
   "Stream" should "handle take N elements" in {
-    val stream = Stream.apply(1, 2, 3, 4, 5)
+    val stream = Stream(1, 2, 3, 4, 5)
     assert(stream.take(3).toList == List(1, 2, 3))
   }
 
+  "Stream" should "handle take N elements via unfold" in {
+    val stream = Stream(1, 2, 3, 4, 5)
+    assert(stream.take2(3).toList == List(1, 2, 3))
+  }
+
   "Stream" should "handle drop N elements" in {
-    val stream = Stream.apply(1, 2, 3, 4, 5)
+    val stream = Stream(1, 2, 3, 4, 5)
     assert(stream.drop(3).toList == List(4, 5))
   }
 
   "Stream" should "handle takeWhile" in {
-    val stream = Stream.apply(1, 2, 3, 4, 5)
+    val stream = Stream(1, 2, 3, 4, 5)
     assert(stream.takeWhile(a => a != 3).toList == List(1, 2))
   }
 
+  "Stream" should "handle takeWhile via foldRight" in {
+    val stream = Stream(1, 2, 3, 4, 5)
+    assert(stream.takeWhile2(a => a != 3).toList == List(1, 2))
+  }
+
+  "Stream" should "handle takeWhile via unfold" in {
+    val stream = Stream(1, 2, 3, 4, 5)
+    assert(stream.takeWhile3(a => a != 3).toList == List(1, 2))
+  }
+
   "Stream" should "handle forAll" in {
-    val stream = Stream.apply(1, 2, 3, 4, 5)
+    val stream = Stream(1, 2, 3, 4, 5)
     assert(stream.forAll(a => a < 10) == true)
     assert(stream.forAll(a => a != 3) == false)
   }
 
-  "Stream" should "handle takeWhile via foldRight" in {
-    val stream = Stream.apply(1, 2, 3, 4, 5)
-    assert(stream.takeWhile2(a => a != 3).toList == List(1, 2))
-  }
-
   "Stream" should "handle headOption via foldRight" in {
-    val stream = Stream.apply(1, 2, 3, 4, 5)
+    val stream = Stream(1, 2, 3, 4, 5)
     val emptyStream = Stream.empty
     assert(stream.headOption == Some(1))
     assert(emptyStream.headOption == None)
   }
 
   "Stream" should "handle map via foldRight" in {
-    val stream = Stream.apply(1, 2, 3, 4, 5)
+    val stream = Stream(1, 2, 3, 4, 5)
     val emptyStream = Stream.empty[Int]
     assert(stream.map(_ + 1).toList == List(2, 3, 4, 5, 6))
     assert(emptyStream.map(_ + 1).toList == List.empty)
   }
 
+  "Stream" should "handle map2 via unfold" in {
+    val stream = Stream(1, 2, 3, 4, 5)
+    val emptyStream = Stream.empty[Int]
+    assert(stream.map2(_ + 1).toList == List(2, 3, 4, 5, 6))
+    assert(emptyStream.map2(_ + 1).toList == List.empty)
+  }
+
   "Stream" should "handle filter via foldRight" in {
-    val stream = Stream.apply(1, 2, 3, 4, 5)
+    val stream = Stream(1, 2, 3, 4, 5)
     val emptyStream = Stream.empty[Int]
     assert(stream.filter(_ % 2 == 0).toList == List(2, 4))
     assert(emptyStream.filter(_ % 2 == 0).toList == List.empty)
   }
 
   "Stream" should "handle append via foldRight" in {
-    val stream = Stream.apply(1, 2, 3, 4, 5)
+    val stream = Stream(1, 2, 3, 4, 5)
     val emptyStream = Stream.empty[Int]
     assert(stream.append(Stream.apply(6)).toList == List(1, 2, 3, 4, 5, 6))
     assert(emptyStream.append(Stream.apply(1)).toList == List(1))
   }
 
   "Stream" should "handle flatMap via foldRight" in {
-    val stream = Stream.apply(1, 2, 3)
+    val stream = Stream(1, 2, 3)
     val emptyStream = Stream.empty[Int]
     assert(stream.flatMap(x => Stream.apply(x, x)).toList == List(1, 1, 2, 2, 3, 3))
     assert(emptyStream.flatMap(x => Stream.apply(x, x)).toList == List.empty)
@@ -105,5 +122,19 @@ class StreamTest extends AnyFlatSpec {
 
   "Stream" should "handle ones via unfold" in {
     assert(Stream.ones2.take(2).toList == List(1, 1))
+  }
+
+  "Stream" should "handle zipWith" in {
+    val stream1 = Stream(1, 2, 3)
+    val stream2 = Stream(1, 2, 3, 4)
+    val expected = List(2, 4, 6)
+    assert(stream1.zipWith(stream2)((a, b) => a + b).toList == expected)
+  }
+
+    "Stream" should "handle zipAll" in {
+    val stream1 = Stream(1, 2, 3)
+    val stream2 = Stream(1, 2, 3, 4)
+    val expected = List((Some(1), Some(1)), (Some(2), Some(2)), (Some(3), Some(3)), (None, Some(4)))
+    assert(stream1.zipAll(stream2).toList == expected)
   }
 }
