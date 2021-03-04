@@ -103,7 +103,7 @@ trait Stream[+A] {
 
   def startsWith[B](s: Stream[B]): Boolean = {
     zipAll(s).foldRight(true)((a, b) => a match {
-      case (Some(Cons(h1, _)), Some(Cons(h2, _))) => b && h1() == h2()
+      case (Some(h1), Some(h2)) => b && h1 == h2
       case (Some(_), None) => true
       case (None, _) => false
     })
