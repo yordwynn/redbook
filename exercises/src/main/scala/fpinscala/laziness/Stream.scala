@@ -32,8 +32,8 @@ trait Stream[+A] {
   }
 
   def take2(n: Int): Stream[A] = {
-    unfold(n)(s => this match {
-      case Cons(h, t) if s > 0 => Some(h(), s - 1)
+    unfold((n, this))(s => s match {
+      case (i, Cons(h, t)) if i > 0 => Some(h(), (i - 1, t()))
       case _ => None
     })
   }
@@ -101,7 +101,13 @@ trait Stream[+A] {
     foldRight(Stream.empty[B])((a, b) => f(a).append(b))
   }
 
-  def startsWith[B](s: Stream[B]): Boolean = ???
+  def startsWith[B](s: Stream[B]): Boolean = {
+    zipAll(s).foldRight(true)((a, b) => a match {
+      case (Some(Cons(h1, _)), Some(Cons(h2, _))) => b && h1() == h2()
+      case (Some(_), None) => true
+      case (None, _) => false
+    })
+  }
 
   def toList: List[A] = {
     val buf = collection.mutable.ListBuffer[A]()

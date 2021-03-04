@@ -131,10 +131,21 @@ class StreamTest extends AnyFlatSpec {
     assert(stream1.zipWith(stream2)((a, b) => a + b).toList == expected)
   }
 
-    "Stream" should "handle zipAll" in {
+  "Stream" should "handle zipAll" in {
     val stream1 = Stream(1, 2, 3)
     val stream2 = Stream(1, 2, 3, 4)
     val expected = List((Some(1), Some(1)), (Some(2), Some(2)), (Some(3), Some(3)), (None, Some(4)))
     assert(stream1.zipAll(stream2).toList == expected)
+  }
+
+  "Stream" should "handle startsWith" in {
+    val stream1 = Stream(1, 2, 3)
+    val stream2 = Stream(2, 3)
+    val stream3 = Stream(1, 2)
+    val stream4 = Stream(1, 2, 3, 4)
+
+    assert(!stream1.startsWith(stream2))
+    assert(stream1.startsWith(stream3))
+    assert(!stream1.startsWith(stream4))
   }
 }
