@@ -40,15 +40,15 @@ class StreamTest extends AnyFlatSpec {
 
   "Stream" should "handle forAll" in {
     val stream = Stream(1, 2, 3, 4, 5)
-    assert(stream.forAll(a => a < 10) == true)
-    assert(stream.forAll(a => a != 3) == false)
+    assert(stream.forAll(a => a < 10))
+    assert(!stream.forAll(a => a != 3))
   }
 
   "Stream" should "handle headOption via foldRight" in {
     val stream = Stream(1, 2, 3, 4, 5)
     val emptyStream = Stream.empty
-    assert(stream.headOption == Some(1))
-    assert(emptyStream.headOption == None)
+    assert(stream.headOption.contains(1))
+    assert(emptyStream.headOption.isEmpty)
   }
 
   "Stream" should "handle map via foldRight" in {
@@ -147,5 +147,11 @@ class StreamTest extends AnyFlatSpec {
     assert(!stream1.startsWith(stream2))
     assert(stream1.startsWith(stream3))
     assert(!stream1.startsWith(stream4))
+  }
+
+  "Stream" should "handle tails" in {
+    val stream1 = Stream(1, 2, 3)
+    val expected = List(List(1, 2, 3), List(2, 3), List(3), List())
+    assert(stream1.tails.map(s => s.toList).toList == expected)
   }
 }
