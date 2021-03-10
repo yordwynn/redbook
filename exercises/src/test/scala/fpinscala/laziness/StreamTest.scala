@@ -154,4 +154,10 @@ class StreamTest extends AnyFlatSpec {
     val expected = List(List(1, 2, 3), List(2, 3), List(3), List())
     assert(stream1.tails.map(s => s.toList).toList == expected)
   }
+
+  "Stream" should "handle scanRight" in {
+    val stream1 = Stream(1, 2, 3)
+    val expected = List(6, 5, 3, 0)
+    assert(stream1.scanRight(0)(_ + _).toList == expected)
+  }
 }
