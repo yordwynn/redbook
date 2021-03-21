@@ -45,11 +45,24 @@ object RNG {
     }
   }
 
-  def intDouble(rng: RNG): ((Int, Double), RNG) = ???
+  def intDouble(rng: RNG): ((Int, Double), RNG) = {
+    val (intRnd, rng2) = rng.nextInt
+    val (doubleRnd, rng3) = RNG.double(rng2)
+    ((intRnd, doubleRnd), rng3)
+  }
 
-  def doubleInt(rng: RNG): ((Double, Int), RNG) = ???
+  def doubleInt(rng: RNG): ((Double, Int), RNG) = {
+    val (doubleRnd, rng2) = double(rng)
+    val (intRnd, rng3) = rng2.nextInt
+    ((doubleRnd, intRnd), rng3)
+  }
 
-  def double3(rng: RNG): ((Double, Double, Double), RNG) = ???
+  def double3(rng: RNG): ((Double, Double, Double), RNG) = {
+    val (doubleRnd1, rng2) = double(rng)
+    val (doubleRnd2, rng3) = double(rng2)
+    val (doubleRnd3, rng4) = double(rng3)
+    ((doubleRnd1, doubleRnd2, doubleRnd3), rng4)
+  }
 
   def ints(count: Int)(rng: RNG): (List[Int], RNG) = ???
 
