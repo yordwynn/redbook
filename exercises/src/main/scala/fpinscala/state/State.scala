@@ -31,17 +31,14 @@ object RNG {
 
   def nonNegativeInt(rng: RNG): (Int, RNG) = {
     rng.nextInt match {
-      case (Int.MinValue, newRng) => (Int.MaxValue, newRng)
-      case (value, newRng) => (-1 * value, newRng)
+      case (value, newRng) if value < 0 => (-1 * (value + 1), newRng)
       case res => res
     }
   }
 
   def double(rng: RNG): (Double, RNG) = {
     nonNegativeInt(rng) match {
-      case (0, state) => (1.0 / Int.MaxValue, state)
-      case (Int.MaxValue, state) => ((Int.MaxValue - 1).toDouble / Int.MaxValue, state)
-      case (intVal, state) => (intVal.toDouble / Int.MaxValue, state)
+      case (intVal, state) => (intVal / (Int.MaxValue.toDouble + 1), state)
     }
   }
 

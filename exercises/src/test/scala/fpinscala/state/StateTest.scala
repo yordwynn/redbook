@@ -10,7 +10,7 @@ class StateTest extends AnyFlatSpec {
 
   "RNG#double" should "return double from the interval (0, 1)" in {
     val (value, _) = RNG.double(RNG.Simple(0))
-    assert(0 < value && value < 1)
+    assert(0 <= value && value < 1)
   }
 
   "RNG#intDouble" should "return differet int and double numbers" in {
