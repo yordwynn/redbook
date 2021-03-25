@@ -8,7 +8,7 @@ class StateTest extends AnyFlatSpec {
     assert(value >= 0)
   }
 
-  "RNG#double" should "return double from the interval (0, 1)" in {
+  "RNG#double" should "return double from the interval [0, 1)" in {
     val (value, _) = RNG.double(RNG.Simple(0))
     assert(0 <= value && value < 1)
   }
@@ -32,5 +32,10 @@ class StateTest extends AnyFlatSpec {
     val expectedLength = 5
     val (res, _) = RNG.ints(expectedLength)(RNG.Simple(0))
     assert(res.length == expectedLength)
+  }
+
+  "RNG@doubleViaMap" should "return double from the interval [0, 1)" in {
+    val (value, _) = RNG.doubleViaMap(RNG.Simple(0))
+    assert(0 <= value && value < 1)
   }
 }
