@@ -33,4 +33,10 @@ class StateTest extends AnyFlatSpec {
     val (res, _) = RNG.ints(expectedLength)(RNG.Simple(0))
     assert(res.length == expectedLength)
   }
+
+  "RNG#intsViaSequense" should "return list of ints" in {
+    val expectedLength = 5
+    val (res, rng) = RNG.intsViaSequense(expectedLength)(RNG.Simple(0))
+    assert(res.length == expectedLength && rng != RNG.Simple(0))
+  }  
 }
