@@ -42,5 +42,5 @@ class StateTest extends AnyFlatSpec {
     val expectedLength = 5
     val (res, rng) = RNG.intsViaSequense(expectedLength)(RNG.Simple(0))
     assert(res.length == expectedLength && rng != RNG.Simple(0))
-  }  
+  }
 }
