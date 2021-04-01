@@ -130,6 +130,16 @@ case class State[S, +A](run: S => (A, S)) {
       val (a, s1) = run(s)
       f(a).run(s1)
     })
+
+    def modify[S](f: S => S): State[S, Unit] = 
+      for { 
+        s <- get
+        _ <- set(f(s)) 
+      } yield ()
+
+    def get[S]: State[S, S] = State(s => (s, s))
+
+    def set[S](s: S): State[S, Unit] = State(_ => ((), s))
 }
 
 sealed trait Input
@@ -146,5 +156,15 @@ object State {
   }
 
   type Rand[A] = State[RNG, A]
-  def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = ???
+  def simulateMachine(inputs: List[Input]): State[Machine, (Int, Int)] = {
+    inputs.foldLeft(State[Machine, Machine](m => (m, m)))((state, in) => {
+      state.map(machine => (in, machine) match {
+          case (Coin, Machine(_, 0, _)) => machine
+          case (Coin, Machine(true, candies, coins)) => Machine(false, candies, coins + 1)
+          case (Coin, Machine(false, candies, coins)) => Machine(false, candies, coins)
+          case (Turn, Machine(false, candies, coins)) => Machine(true, candies - 1, coins)
+          case (Turn, Machine(true, candies, coins)) => Machine(true, candies, coins)
+      })
+    }).map(machine => (machine.coins, machine.candies))
+  }
 }

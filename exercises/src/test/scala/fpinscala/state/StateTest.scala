@@ -43,4 +43,11 @@ class StateTest extends AnyFlatSpec {
     val (res, rng) = RNG.intsViaSequense(expectedLength)(RNG.Simple(0))
     assert(res.length == expectedLength && rng != RNG.Simple(0))
   }
+
+  "Machine" should "give me some candies" in {
+    val expected = (14, 1)
+    val actions = List(Coin, Turn, Turn, Coin, Turn, Coin, Coin, Turn, Coin, Turn)
+    val (actial, machine) = State.simulateMachine(actions).run(Machine(true, 5, 10))
+    assert(expected == actial)
+  }
 }
