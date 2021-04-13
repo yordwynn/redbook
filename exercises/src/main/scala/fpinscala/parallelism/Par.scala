@@ -35,11 +35,12 @@ object Par {
 
   def map2[A, B, C](a: Par[A], b: Par[B], timeout: Long, units: TimeUnit)(f: (A, B) => C): Par[C] =
     (es: ExecutorService) => {
-      val current = System.currentTimeMillis()
+      val t1 = System.currentTimeMillis()
       val ag = a(es).get(timeout, units)
 
-      val wasted = System.currentTimeMillis()
-      val bg = b(es).get(units.convert(wasted - current, TimeUnit.MILLISECONDS), units)
+      val t2 = System.currentTimeMillis()
+      val wasted = units.convert(t2 - t1, TimeUnit.MILLISECONDS)
+      val bg = b(es).get(timeout - wasted, units)
 
       UnitFuture(f(ag, bg))
     }
