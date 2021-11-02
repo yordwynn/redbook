@@ -19,4 +19,8 @@ class GettingStartedTest extends AnyFlatSpec {
   "curry" should "curry :)" in {
     assert(curry[Int, Int, Int]((x, y) => x + y)(1)(2) == 3)
   }
+
+  "uncurry" should "uncurry" in {
+    assert(uncurry[Int, Int, Int](x => y => x * y)(1, 2) == 2)
+  }
 }
