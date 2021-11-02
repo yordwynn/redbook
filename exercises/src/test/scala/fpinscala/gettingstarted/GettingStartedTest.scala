@@ -15,4 +15,8 @@ class GettingStartedTest extends AnyFlatSpec {
   "isSorted" should "handle non-empty lists" in {
     assert(isSorted[Int](Array(1, 2, 3), (x, y) => x < y))
   }
+
+  "curry" should "curry :)" in {
+    assert(curry[Int, Int, Int]((x, y) => x + y)(1)(2) == 3)
+  }
 }
