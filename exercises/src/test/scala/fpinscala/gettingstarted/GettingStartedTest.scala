@@ -23,4 +23,8 @@ class GettingStartedTest extends AnyFlatSpec {
   "uncurry" should "uncurry" in {
     assert(uncurry[Int, Int, Int](x => y => x * y)(1, 2) == 2)
   }
+
+  "compuse" should "compuse" in {
+    assert(compose[Int, Double, Double](x => x * 3, x => x + 1)(1) == 6)
+  }
 }
