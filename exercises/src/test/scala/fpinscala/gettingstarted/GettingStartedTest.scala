@@ -1,6 +1,7 @@
 import org.scalatest.flatspec.AnyFlatSpec
 
 import fpinscala.gettingstarted.MyModule.fib
+import fpinscala.gettingstarted.PolymorphicFunctions._
 
 class GettingStartedTest extends AnyFlatSpec {
   "fib" should "handle positive integers" in {
@@ -9,5 +10,9 @@ class GettingStartedTest extends AnyFlatSpec {
 
   "fib" should "handle zeroes" in {
     assert(fib(0) == 0)
+  }
+
+  "isSorted" should "handle non-empty lists" in {
+    assert(isSorted[Int](Array(1, 2, 3), (x, y) => x < y))
   }
 }
