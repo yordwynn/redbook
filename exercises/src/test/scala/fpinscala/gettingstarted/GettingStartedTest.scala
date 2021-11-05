@@ -1,3 +1,5 @@
+package fpinscala.gettingstarted
+
 import org.scalatest.flatspec.AnyFlatSpec
 
 import fpinscala.gettingstarted.MyModule.fib
