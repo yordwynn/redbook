@@ -134,4 +134,10 @@ class ListTest extends AnyFlatSpec {
       "foldLeft should compute the same concatenation value as foldRight",
     )
   }
+
+  "list" should "handle sum, product, and length via foldLeft" in {
+    assert(sumViaFoldLeft(List(1, 2, 3)) == sum2(List(1, 2, 3)))
+    assert(productViaFoldLeft(List(1, 2, 3)) == product2(List(1, 2, 3)))
+    assert(lengthViaFoldLeft(List(1, 2, 3)) == List.length(List(1, 2, 3)))
+  }
 }

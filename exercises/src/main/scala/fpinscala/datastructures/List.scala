@@ -121,5 +121,14 @@ object List { // `List` companion object. Contains functions for creating and wo
     }
   }
 
+  def sumViaFoldLeft(l: List[Int]): Int = 
+    foldLeft(l, 0)(_ + _)
+
+  def productViaFoldLeft(l: List[Double]): Double = 
+    foldLeft(l, 1.0)(_ * _)
+
+  def lengthViaFoldLeft[A](l: List[A]): Int = 
+    foldLeft(l, 0)((b, _) => b + 1)
+
   def map[A, B](l: List[A])(f: A => B): List[B] = ???
 }
