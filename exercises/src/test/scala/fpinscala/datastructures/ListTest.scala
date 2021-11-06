@@ -108,4 +108,10 @@ class ListTest extends AnyFlatSpec {
       foldRight(List(1, 2, 3), Nil: List[Int])(Cons(_, _)) == List(1, 2, 3)
     )
   }
+
+  "list" should "handle length via foldRight" in {
+    assert(List.length(Nil) == 0, "length of empty list is zero")
+    assert(List.length(List(1)) == 1, "length of single-element list is one")
+    assert(List.length(List(1, 2, 3)) == 3, "length of n-element list is n")
+  }
 }
