@@ -114,4 +114,24 @@ class ListTest extends AnyFlatSpec {
     assert(List.length(List(1)) == 1, "length of single-element list is one")
     assert(List.length(List(1, 2, 3)) == 3, "length of n-element list is n")
   }
+
+  "list" should "handle foldLeft" in {
+    assert(
+      foldLeft(List(1, 2, 3, 4, 5), 0)(_ + _) ==
+      foldRight(List(1, 2, 3, 4, 5), 0)(_ + _),
+      "foldLeft should compute the same sum value as foldRight",
+    )
+
+    assert(
+      foldLeft(List(1, 2, 3, 4, 5), 1)(_ * _) ==
+      foldRight(List(1, 2, 3, 4, 5), 1)(_ * _),
+      "foldLeft should compute the same product value as foldRight",
+    )
+
+    assert(
+      foldLeft(List("a", "b", "c"), "")(_ + _) ==
+      foldRight(List("a", "b", "c"), "")(_ + _),
+      "foldLeft should compute the same concatenation value as foldRight",
+    )
+  }
 }
