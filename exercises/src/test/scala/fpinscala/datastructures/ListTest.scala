@@ -102,4 +102,10 @@ class ListTest extends AnyFlatSpec {
       "init of list should not have last element",
     )
   }
+
+  "foldRight" should "return the same list" in {
+    assert(
+      foldRight(List(1, 2, 3), Nil: List[Int])(Cons(_, _)) == List(1, 2, 3)
+    )
+  }
 }
