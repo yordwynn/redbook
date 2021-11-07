@@ -156,5 +156,7 @@ object List { // `List` companion object. Contains functions for creating and wo
     foldRightViaFoldLeft(doubles, Nil: List[String])((a, b) => Cons(a.toString, b))
   }
 
-  def map[A, B](l: List[A])(f: A => B): List[B] = ???
+  def map[A, B](l: List[A])(f: A => B): List[B] = {
+    foldRightViaFoldLeft(l, Nil: List[B])((a, b) => Cons(f(a), b))
+  }
 }
