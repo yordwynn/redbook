@@ -178,4 +178,8 @@ class ListTest extends AnyFlatSpec {
   "list" should "handle addOne" in {
     assert(addOne(List(1, 2, 3)) == List(2, 3, 4))
   }
+
+  "list" should "handle doublesToStrings" in {
+    assert(doublesToStrings(List(1, 2, 3)) == List("1.0", "2.0", "3.0"))
+  }
 }
