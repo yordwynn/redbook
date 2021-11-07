@@ -156,4 +156,10 @@ class ListTest extends AnyFlatSpec {
       foldRight(List(1, 2, 3), Nil: List[Int])((x, y) => Cons(x, y)) == foldRightViaFoldLeft(List(1, 2, 3), Nil: List[Int])((x, y) => Cons(x, y))
     )
   }
+
+  "append via foldLeft" should "append one list to the end of another" in {
+    assert(
+      appendViaFoldRight(List(1, 2, 3), List(10, 20, 30)) == List(1, 2, 3, 10, 20, 30)
+    )
+  }
 }
