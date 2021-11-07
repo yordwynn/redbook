@@ -144,5 +144,9 @@ object List { // `List` companion object. Contains functions for creating and wo
     foldRightViaFoldLeft(as1, as2)((a, b) => Cons(a, b))
   }
 
+  def concatenate[A](ass: List[List[A]]): List[A] = {
+    foldRightViaFoldLeft(ass, Nil: List[A])((a, b) => appendViaFoldRight(a, b))
+  }
+
   def map[A, B](l: List[A])(f: A => B): List[B] = ???
 }

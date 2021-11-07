@@ -162,4 +162,16 @@ class ListTest extends AnyFlatSpec {
       appendViaFoldRight(List(1, 2, 3), List(10, 20, 30)) == List(1, 2, 3, 10, 20, 30)
     )
   }
+
+  "list" should "handle concatenation" in {
+    assert(
+      concatenate(
+        List(
+          List(1, 2),
+          List(3, 4, 5),
+          List(6),
+        )
+      ) == List(1, 2, 3, 4, 5, 6)
+    )
+  }
 }
