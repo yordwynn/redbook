@@ -187,4 +187,8 @@ class ListTest extends AnyFlatSpec {
     assert(List.map(List(1, 2, 3))(_ + 1) == List(2, 3, 4))
     assert(List.map(List(1, 2, 3))(_.toString) == List("1", "2", "3"))
   }
+
+  "list" should "handle filter" in {
+    assert(List.filter(List(1, 2, 3, 4, 5, 6))(_ % 2 == 0) == List(2, 4, 6))
+  }
 }
