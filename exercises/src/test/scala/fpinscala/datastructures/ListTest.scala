@@ -144,4 +144,16 @@ class ListTest extends AnyFlatSpec {
   "list" should "handle reverse" in {
     assert(List.reverse(List(1, 2, 3)) == List(3, 2, 1))
   }
+
+  "foldLeft via foldRight" should "reverse the list" in {
+    assert(
+      foldLeft(List(1, 2, 3), Nil: List[Int])((x, y) => Cons(y, x)) == foldLeftViaFoldRight(List(1, 2, 3), Nil: List[Int])((x, y) => Cons(y, x))
+    )
+  }
+
+  "foldRight via foldLeft" should "not reverse the list" in {
+    assert(
+      foldRight(List(1, 2, 3), Nil: List[Int])((x, y) => Cons(x, y)) == foldRightViaFoldLeft(List(1, 2, 3), Nil: List[Int])((x, y) => Cons(x, y))
+    )
+  }
 }

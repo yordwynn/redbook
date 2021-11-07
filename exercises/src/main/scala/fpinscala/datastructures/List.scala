@@ -1,12 +1,10 @@
 package fpinscala.datastructures
 
 import scala.annotation.tailrec
+import scala.collection.IndexedSeqView
 
 sealed trait List[+A] // `List` data type, parameterized on a type, `A`
-case object Nil
-  extends List[
-    Nothing
-  ] // A `List` data constructor representing the empty list
+case object Nil extends List[Nothing] // A `List` data constructor representing the empty list
 /* Another data constructor, representing nonempty lists. Note that `tail` is another `List[A]`,
 which may be `Nil` or another `Cons`.
  */
@@ -129,6 +127,18 @@ object List { // `List` companion object. Contains functions for creating and wo
 
   def lengthViaFoldLeft[A](l: List[A]): Int = 
     foldLeft(l, 0)((b, _) => b + 1)
+
+  def reverse[A](as: List[A]): List[A] = {
+    foldLeft(as, Nil: List[A])((b, a) => Cons(a, b))
+  }
+
+  def foldLeftViaFoldRight[A, B](as: List[A], z: B)(f: (B, A) => B): B = {
+    foldRight(reverse(as), z)((a, b) => f(b, a))
+  }
+
+  def foldRightViaFoldLeft[A, B](as: List[A], z: B)(f: (A, B) => B): B = {
+    foldLeft(reverse(as), z)((b, a) => f(a, b))
+  }
 
   def map[A, B](l: List[A])(f: A => B): List[B] = ???
 }
