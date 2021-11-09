@@ -191,4 +191,10 @@ class ListTest extends AnyFlatSpec {
   "list" should "handle filter" in {
     assert(List.filter(List(1, 2, 3, 4, 5, 6))(_ % 2 == 0) == List(2, 4, 6))
   }
+
+  "list" should "handle flatmap" in {
+    assert(
+      List.flatMap(List(1, 2, 3))(i => List(i, i)) == List(1, 1, 2, 2, 3, 3)
+    )
+  }
 }
