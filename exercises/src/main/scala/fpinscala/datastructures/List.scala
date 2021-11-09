@@ -199,4 +199,18 @@ object List { // `List` companion object. Contains functions for creating and wo
 
     go(as, bs, Nil)
   }
+
+  def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = {
+    @tailrec
+    def go(sp: List[A], sb: List[A], res: Boolean): Boolean = {
+      (sp, sb) match {
+        case (Nil, _) => res
+        case (_, Nil) => res
+        case (Cons(h1, t1), Cons(h2, t2)) if h1 == h2 => go(t1, t2, true)
+        case (Cons(h1, t1), _) => go(t1, sb, false)
+      }
+    }
+
+    go(sup, sub, false)
+  }
 }
