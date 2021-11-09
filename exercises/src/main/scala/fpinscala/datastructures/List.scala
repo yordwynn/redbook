@@ -185,4 +185,18 @@ object List { // `List` companion object. Contains functions for creating and wo
 
     go(ints1, ints2, Nil)
   }
+
+  def zipWith[A, B, C](as: List[A], bs: List[B])(f: (A, B) => C): List[C] = {
+    @tailrec
+    def go(l1: List[A], l2: List[B], res: List[C]): List[C] = {
+      (l1, l2) match {
+        case (Cons(h1, t1), Cons(h2, t2)) => go(t1, t2, Cons(f(h1, h2), res))
+        case (Nil, Nil) => reverse(res)
+        case (Nil, _) => sys.error("lists must have the same length")
+        case (_, Nil) => sys.error("lists must have the same length")
+      }
+    }
+
+    go(as, bs, Nil)
+  }
 }

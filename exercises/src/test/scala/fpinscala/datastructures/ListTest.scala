@@ -207,4 +207,10 @@ class ListTest extends AnyFlatSpec {
   "list" should "handle sum two lists" in {
     assert(zipSum(List(1, 2, 3), List(4, 5, 6)) == List(5, 7, 9))
   }
+
+  "list" should "handle zipWith" in {
+    assert(
+      zipWith(List(1, 2, 3), List(4, 5, 6))((a, b) => a + b) == List(5, 7, 9)
+    )
+  }
 }
