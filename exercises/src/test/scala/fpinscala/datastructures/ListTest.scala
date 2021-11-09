@@ -203,4 +203,8 @@ class ListTest extends AnyFlatSpec {
       filterViaFlatmap(List(1, 2, 3, 4, 5, 6))(_ % 2 == 0) == List(2, 4, 6)
     )
   }
+
+  "list" should "handle sum two lists" in {
+    assert(zipSum(List(1, 2, 3), List(4, 5, 6)) == List(5, 7, 9))
+  }
 }

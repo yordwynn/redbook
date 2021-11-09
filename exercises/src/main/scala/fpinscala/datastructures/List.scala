@@ -171,4 +171,18 @@ object List { // `List` companion object. Contains functions for creating and wo
   def filterViaFlatmap[A](as: List[A])(p: A => Boolean): List[A] = {
     flatMap(as)(a => if (p(a)) List(a) else Nil)
   }
+
+  def zipSum(ints1: List[Int], ints2: List[Int]): List[Int] = {
+    @tailrec
+    def go(l1: List[Int], l2: List[Int], res: List[Int]): List[Int] = {
+      (l1, l2) match {
+        case (Cons(h1, t1), Cons(h2, t2)) => go(t1, t2, Cons(h1 + h2, res))
+        case (Nil, Nil) => reverse(res)
+        case (Nil, _) => sys.error("lists must have the same length")
+        case (_, Nil) => sys.error("lists must have the same length")
+      }
+    }
+
+    go(ints1, ints2, Nil)
+  }
 }
