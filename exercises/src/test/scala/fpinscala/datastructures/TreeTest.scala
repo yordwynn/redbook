@@ -15,4 +15,10 @@ class TreeTest extends AnyFlatSpec {
   "depth" should "return the longest path" in {
     assert(depth(Branch(Branch(Leaf(1), Leaf(4)), Leaf(2))) == 2)
   }
+
+  "map" should "modify each element of a tree" in {
+    val expected = Branch(Branch(Leaf("1"), Leaf("4")), Branch(Leaf("2"), Leaf("3")))
+    val mapped = map(Branch(Branch(Leaf(1), Leaf(4)), Branch(Leaf(2), Leaf(3))))(_.toString)
+    assert(expected == mapped)
+  }
 }
