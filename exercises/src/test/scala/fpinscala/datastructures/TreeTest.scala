@@ -11,4 +11,8 @@ class TreeTest extends AnyFlatSpec {
   "maximum" should "return the maximum value of lists" in {
     assert(maximum(Branch(Branch(Leaf(1), Leaf(4)), Branch(Leaf(2), Leaf(3)))) == 4)
   }
+
+  "depth" should "return the longest path" in {
+    assert(depth(Branch(Branch(Leaf(1), Leaf(4)), Leaf(2))) == 2)
+  }
 }
