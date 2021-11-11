@@ -21,4 +21,22 @@ class TreeTest extends AnyFlatSpec {
     val mapped = map(Branch(Branch(Leaf(1), Leaf(4)), Branch(Leaf(2), Leaf(3))))(_.toString)
     assert(expected == mapped)
   }
+
+  "sizeViaFold" should "return nubber of nodes" in {
+    assert(sizeViaFold(Branch(Branch(Leaf("a"), Leaf("b")), Branch(Leaf("c"), Leaf("d")))) == 7)
+  }
+
+  "maximumViaFold" should "return the maximum value of lists" in {
+    assert(maximumViaFold(Branch(Branch(Leaf(1), Leaf(4)), Branch(Leaf(2), Leaf(3)))) == 4)
+  }
+
+  "depthViaFold" should "return the longest path" in {
+    assert(depthViaFold(Branch(Branch(Leaf(1), Leaf(4)), Leaf(2))) == 2)
+  }
+
+  "mapViaFold" should "modify each element of a tree" in {
+    val expected = Branch(Branch(Leaf("1"), Leaf("4")), Branch(Leaf("2"), Leaf("3")))
+    val mapped = mapViaFold(Branch(Branch(Leaf(1), Leaf(4)), Branch(Leaf(2), Leaf(3))))(_.toString)
+    assert(expected == mapped)
+  }
 }
