@@ -32,9 +32,9 @@ class OptionTest extends AnyFlatSpec {
     assert((None: Option[Int]).filter(a => a % 2 == 0) == None)
   }
 
-//   "option" should "handle variance" in {
-//     assert(Option.variance(Seq(1, 2, 3, 4)) == Some(1.25))
-//   }
+  "option" should "handle variance" in {
+    assert(Option.variance(Seq(1, 2, 3, 4)) == Some(1.25))
+  }
 
 //   "option" should "handle map2" in {
 //     assert(Option.map2(Some(1), Some(2))(_ + _) == Some(3))
