@@ -49,8 +49,13 @@ class OptionTest extends AnyFlatSpec {
     assert(Option.sequence(List(Some(1), Some(2))) == Some(List(1, 2)))
   }
 
-//   "option" should "handle traverse" in {
-//     assert(Option.traverse(List(0, 1, 2))(x => Option.Try(x + 1)) == Some(List(1, 2, 3)))
-//     assert(Option.traverse(List(0, 1, 2))(x => Option.Try(1 / x)) == None)
-//   }
+  "option" should "handle traverse" in {
+    assert(Option.traverse(List(0, 1, 2))(x => Option.Try(x + 1)) == Some(List(1, 2, 3)))
+    assert(Option.traverse(List(0, 1, 2))(x => Option.Try(1 / x)) == None)
+  }
+
+  "option" should "handle sequencce via traverce" in {
+    assert(Option.sequenceViaTraverce(List(Some(1), None, Some(2))) == None)
+    assert(Option.sequenceViaTraverce(List(Some(1), Some(2))) == Some(List(1, 2)))
+  }
 }
