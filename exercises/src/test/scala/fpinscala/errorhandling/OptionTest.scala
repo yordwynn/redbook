@@ -36,13 +36,13 @@ class OptionTest extends AnyFlatSpec {
     assert(Option.variance(Seq(1, 2, 3, 4)) == Some(1.25))
   }
 
-//   "option" should "handle map2" in {
-//     assert(Option.map2(Some(1), Some(2))(_ + _) == Some(3))
-//     assert(Option.map2(None: Option[Int], Some(2))(_ + _) == None)
-//     assert(Option.map2(Some(1), None: Option[Int])(_ + _) == None)
-//     assert(Option.map2(Some(1), None: Option[Int])(_ + _) == None)
-//     assert(Option.map2(None: Option[Int], None: Option[Int])(_ + _) == None)
-//   }
+  "option" should "handle map2" in {
+    assert(Option.map2(Some(1), Some(2))(_ + _) == Some(3))
+    assert(Option.map2(None: Option[Int], Some(2))(_ + _) == None)
+    assert(Option.map2(Some(1), None: Option[Int])(_ + _) == None)
+    assert(Option.map2(Some(1), None: Option[Int])(_ + _) == None)
+    assert(Option.map2(None: Option[Int], None: Option[Int])(_ + _) == None)
+  }
 
 //   "option" should "handle sequencce" in {
 //     assert(Option.sequence(List(Some(1), None, Some(2))) == None)
