@@ -29,28 +29,28 @@ class EitherTest extends AnyFlatSpec {
     assert(left.map2(Left(4))(_ + _) == Left(0))
   }
 
-//   "either" should "handle sequence" in {
-//     val l1 = List(Right(1), Right(2), Right(3))
-//     val l2 = List(Right(1), Left(2), Left(10), Right(3))
-//     assert(Either.sequence(l1) == Right(List(1, 2, 3)))
-//     assert(Either.sequence(l2) == Left(2))
-//   }
+  "either" should "handle sequence" in {
+    val l1 = List(Right(1), Right(2), Right(3))
+    val l2 = List(Right(1), Left(2), Left(10), Right(3))
+    assert(Either.sequence(l1) == Right(List(1, 2, 3)))
+    assert(Either.sequence(l2) == Left(2))
+  }
 
-//   "either" should "handle traverse" in {
-//     val l1 = List(1, 2, 3, 0)
-//     assert(
-//       Either.traverse(l1)(
-//         x =>
-//           try { Right(x * 2) }
-//           catch { case _: Throwable => Left(42) }
-//       ) == Right(List(2, 4, 6, 0))
-//     )
-//     assert(
-//       Either.traverse(l1)(
-//         x =>
-//           try { Right(0 / x) }
-//           catch { case _: Throwable => Left(42) }
-//       ) == Left(42)
-//     )
-//   }
+  "either" should "handle traverse" in {
+    val l1 = List(1, 2, 3, 0)
+    assert(
+      Either.traverse(l1)(
+        x =>
+          try { Right(x * 2) }
+          catch { case _: Throwable => Left(42) }
+      ) == Right(List(2, 4, 6, 0))
+    )
+    assert(
+      Either.traverse(l1)(
+        x =>
+          try { Right(0 / x) }
+          catch { case _: Throwable => Left(42) }
+      ) == Left(42)
+    )
+  }
 }
