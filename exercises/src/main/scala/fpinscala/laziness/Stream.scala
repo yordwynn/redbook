@@ -1,6 +1,7 @@
 package fpinscala.laziness
 
 import Stream._
+import scala.annotation.tailrec
 trait Stream[+A] {
   def foldRight[B](
     z: => B
@@ -27,6 +28,7 @@ trait Stream[+A] {
   }
 
   def toList: List[A] = {
+    @tailrec
     def go(source: Stream[A], res: List[A]): List[A] = {
       source match {
         case Cons(h, t) => go(t(), h() +: res)
@@ -37,9 +39,21 @@ trait Stream[+A] {
     go(this, List.empty).reverse
   }
 
-  def take(n: Int): Stream[A] = ???
+  def take(n: Int): Stream[A] = {
+    this match {
+      case Cons(h, t) if n > 0 => cons(h(), t().take(n - 1))
+      case Cons(h, _) if n == 1 => cons(h(), empty)
+      case _ => empty 
+    }
+  }
 
-  def drop(n: Int): Stream[A] = ???
+  @tailrec
+  final def drop(n: Int): Stream[A] = {
+    this match {
+      case Cons(_, t) if n > 0 => t().drop(n - 1)
+      case _ => this
+    }
+  }
 
   def takeWhile(p: A => Boolean): Stream[A] = ???
 
