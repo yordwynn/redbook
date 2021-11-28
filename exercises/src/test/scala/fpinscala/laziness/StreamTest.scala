@@ -29,14 +29,14 @@ class StreamTest extends AnyFlatSpec {
     assert(!stream.forAll(a => a != 3))
   }
 
+  "Stream" should "handle takeWhile via foldRight" in {
+    val stream = Stream(1, 2, 3, 4, 5)
+    assert(stream.takeWhileViaFoldRight(a => a != 3).toList == List(1, 2))
+  }
+
 //   "Stream" should "handle take N elements via unfold" in {
 //     val stream = Stream(1, 2, 3, 4, 5)
 //     assert(stream.takeViaUnfold(3).toList == List(1, 2, 3))
-//   }
-
-//   "Stream" should "handle takeWhile via foldRight" in {
-//     val stream = Stream(1, 2, 3, 4, 5)
-//     assert(stream.takeWhileViaFoldRight(a => a != 3).toList == List(1, 2))
 //   }
 
 //   "Stream" should "handle takeWhile via unfold" in {
