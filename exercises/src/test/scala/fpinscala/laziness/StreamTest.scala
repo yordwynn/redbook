@@ -34,6 +34,13 @@ class StreamTest extends AnyFlatSpec {
     assert(stream.takeWhileViaFoldRight(a => a != 3).toList == List(1, 2))
   }
 
+  "Stream" should "handle headOption via foldRight" in {
+    val stream = Stream(1, 2, 3, 4, 5)
+    val emptyStream = Stream.empty
+    assert(stream.headOption.contains(1))
+    assert(emptyStream.headOption.isEmpty)
+  }
+
 //   "Stream" should "handle take N elements via unfold" in {
 //     val stream = Stream(1, 2, 3, 4, 5)
 //     assert(stream.takeViaUnfold(3).toList == List(1, 2, 3))
@@ -42,13 +49,6 @@ class StreamTest extends AnyFlatSpec {
 //   "Stream" should "handle takeWhile via unfold" in {
 //     val stream = Stream(1, 2, 3, 4, 5)
 //     assert(stream.takeWhileViaUnfold(a => a != 3).toList == List(1, 2))
-//   }
-
-//   "Stream" should "handle headOption via foldRight" in {
-//     val stream = Stream(1, 2, 3, 4, 5)
-//     val emptyStream = Stream.empty
-//     assert(stream.headOption.contains(1))
-//     assert(emptyStream.headOption.isEmpty)
 //   }
 
 //   "Stream" should "handle map via foldRight" in {
