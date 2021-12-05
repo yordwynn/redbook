@@ -73,6 +73,10 @@ class StreamTest extends AnyFlatSpec {
     assert(Stream.constant(3).take(2).toList == List(3, 3))
   }
 
+  "Stream" should "handle from function" in {
+    assert(Stream.from(3).take(2).toList == List(3, 4))
+  }
+
 //   "Stream" should "handle take N elements via unfold" in {
 //     val stream = Stream(1, 2, 3, 4, 5)
 //     assert(stream.takeViaUnfold(3).toList == List(1, 2, 3))
@@ -92,10 +96,6 @@ class StreamTest extends AnyFlatSpec {
 
 //   "Stream" should "handle constant via unfold" in {
 //     assert(Stream.constantViaUnfold(3).take(2).toList == List(3, 3))
-//   }
-
-//   "Stream" should "handle from function" in {
-//     assert(Stream.from(3).take(2).toList == List(3, 4))
 //   }
 
 //   "Stream" should "handle from via unfold" in {
