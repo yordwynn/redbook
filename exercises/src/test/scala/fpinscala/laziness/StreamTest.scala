@@ -69,6 +69,10 @@ class StreamTest extends AnyFlatSpec {
     assert(emptyStream.flatMap(x => Stream.apply(x, x)).toList == List.empty)
   }
 
+  "Stream" should "handle constant function" in {
+    assert(Stream.constant(3).take(2).toList == List(3, 3))
+  }
+
 //   "Stream" should "handle take N elements via unfold" in {
 //     val stream = Stream(1, 2, 3, 4, 5)
 //     assert(stream.takeViaUnfold(3).toList == List(1, 2, 3))
@@ -84,10 +88,6 @@ class StreamTest extends AnyFlatSpec {
 //     val emptyStream = Stream.empty[Int]
 //     assert(stream.mapViaUnfold(_ + 1).toList == List(2, 3, 4, 5, 6))
 //     assert(emptyStream.mapViaUnfold(_ + 1).toList == List.empty)
-//   }
-
-//   "Stream" should "handle constant function" in {
-//     assert(Stream.constant(3).take(2).toList == List(3, 3))
 //   }
 
 //   "Stream" should "handle constant via unfold" in {
