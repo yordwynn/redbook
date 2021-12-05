@@ -77,6 +77,20 @@ class StreamTest extends AnyFlatSpec {
     assert(Stream.from(3).take(2).toList == List(3, 4))
   }
 
+  "Stream" should "handle fibs function" in {
+    assert(Stream.fibs.take(6).toList == List(0, 1, 1, 2, 3, 5))
+  }
+
+  "Stream" should "handle unfold" in {
+    val infiniteAcual = Stream.unfold(1)(s => Some(s -> s)).take(3).toList
+    val infiniteExpected = List(1, 1, 1)
+    assert(infiniteExpected == infiniteAcual)
+
+    val finiteActual = Stream.unfold(0)(s => if (s < 5) Some((s, s + 1)) else None).toList
+    val finiteExpected = List(0, 1, 2, 3, 4)
+    assert(finiteExpected == finiteActual)
+  }
+
 //   "Stream" should "handle take N elements via unfold" in {
 //     val stream = Stream(1, 2, 3, 4, 5)
 //     assert(stream.takeViaUnfold(3).toList == List(1, 2, 3))
@@ -102,22 +116,8 @@ class StreamTest extends AnyFlatSpec {
 //     assert(Stream.fromViaUnfold(3).take(2).toList == List(3, 4))
 //   }
 
-//   "Stream" should "handle fibs function" in {
-//     assert(Stream.fibs.take(6).toList == List(0, 1, 1, 2, 3, 5))
-//   }
-
 //   "Stream" should "handle fibs via unfold" in {
 //     assert(Stream.fibsViaUnfold.take(6).toList == List(0, 1, 1, 2, 3, 5))
-//   }
-
-//   "Stream" should "handle unfold" in {
-//     val infiniteAcual = Stream.unfold(1)(s => Some(s -> s)).take(3).toList
-//     val infiniteExpected = List(1, 1, 1)
-//     assert(infiniteExpected == infiniteAcual)
-
-//     val finiteActual = Stream.unfold(0)(s => if (s < 5) Some((s, s + 1)) else None).toList
-//     val finiteExpected = List(0, 1, 2, 3, 4)
-//     assert(finiteExpected == finiteActual)
 //   }
 
 //   "Stream" should "handle ones via unfold" in {
