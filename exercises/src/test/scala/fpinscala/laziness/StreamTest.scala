@@ -41,6 +41,34 @@ class StreamTest extends AnyFlatSpec {
     assert(emptyStream.headOption.isEmpty)
   }
 
+  "Stream" should "handle map via foldRight" in {
+    val stream = Stream(1, 2, 3, 4, 5)
+    val emptyStream = Stream.empty[Int]
+    assert(stream.map(_ + 1).toList == List(2, 3, 4, 5, 6))
+    assert(emptyStream.map(_ + 1).toList == List.empty)
+  }
+
+  "Stream" should "handle filter via foldRight" in {
+    val stream = Stream(1, 2, 3, 4, 5)
+    val emptyStream = Stream.empty[Int]
+    assert(stream.filter(_ % 2 == 0).toList == List(2, 4))
+    assert(emptyStream.filter(_ % 2 == 0).toList == List.empty)
+  }
+
+  "Stream" should "handle append via foldRight" in {
+    val stream = Stream(1, 2, 3, 4, 5)
+    val emptyStream = Stream.empty[Int]
+    assert(stream.append(Stream.apply(6)).toList == List(1, 2, 3, 4, 5, 6))
+    assert(emptyStream.append(Stream.apply(1)).toList == List(1))
+  }
+
+  "Stream" should "handle flatMap via foldRight" in {
+    val stream = Stream(1, 2, 3)
+    val emptyStream = Stream.empty[Int]
+    assert(stream.flatMap(x => Stream.apply(x, x)).toList == List(1, 1, 2, 2, 3, 3))
+    assert(emptyStream.flatMap(x => Stream.apply(x, x)).toList == List.empty)
+  }
+
 //   "Stream" should "handle take N elements via unfold" in {
 //     val stream = Stream(1, 2, 3, 4, 5)
 //     assert(stream.takeViaUnfold(3).toList == List(1, 2, 3))
@@ -51,39 +79,11 @@ class StreamTest extends AnyFlatSpec {
 //     assert(stream.takeWhileViaUnfold(a => a != 3).toList == List(1, 2))
 //   }
 
-//   "Stream" should "handle map via foldRight" in {
-//     val stream = Stream(1, 2, 3, 4, 5)
-//     val emptyStream = Stream.empty[Int]
-//     assert(stream.map(_ + 1).toList == List(2, 3, 4, 5, 6))
-//     assert(emptyStream.map(_ + 1).toList == List.empty)
-//   }
-
 //   "Stream" should "handle map2 via unfold" in {
 //     val stream = Stream(1, 2, 3, 4, 5)
 //     val emptyStream = Stream.empty[Int]
 //     assert(stream.mapViaUnfold(_ + 1).toList == List(2, 3, 4, 5, 6))
 //     assert(emptyStream.mapViaUnfold(_ + 1).toList == List.empty)
-//   }
-
-//   "Stream" should "handle filter via foldRight" in {
-//     val stream = Stream(1, 2, 3, 4, 5)
-//     val emptyStream = Stream.empty[Int]
-//     assert(stream.filter(_ % 2 == 0).toList == List(2, 4))
-//     assert(emptyStream.filter(_ % 2 == 0).toList == List.empty)
-//   }
-
-//   "Stream" should "handle append via foldRight" in {
-//     val stream = Stream(1, 2, 3, 4, 5)
-//     val emptyStream = Stream.empty[Int]
-//     assert(stream.append(Stream.apply(6)).toList == List(1, 2, 3, 4, 5, 6))
-//     assert(emptyStream.append(Stream.apply(1)).toList == List(1))
-//   }
-
-//   "Stream" should "handle flatMap via foldRight" in {
-//     val stream = Stream(1, 2, 3)
-//     val emptyStream = Stream.empty[Int]
-//     assert(stream.flatMap(x => Stream.apply(x, x)).toList == List(1, 1, 2, 2, 3, 3))
-//     assert(emptyStream.flatMap(x => Stream.apply(x, x)).toList == List.empty)
 //   }
 
 //   "Stream" should "handle constant function" in {

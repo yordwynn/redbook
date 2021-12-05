@@ -43,7 +43,7 @@ trait Stream[+A] {
     this match {
       case Cons(h, t) if n > 0 => cons(h(), t().take(n - 1))
       case Cons(h, _) if n == 1 => cons(h(), empty)
-      case _ => empty 
+      case _ => empty
     }
   }
 
@@ -57,7 +57,7 @@ trait Stream[+A] {
 
   def takeWhile(p: A => Boolean): Stream[A] = {
     this match {
-      case Cons(h, t) if (p(h())) => cons(h(), t().takeWhile(p))
+      case Cons(h, t) if p(h()) => cons(h(), t().takeWhile(p))
       case _ => empty
     }
   }
@@ -72,6 +72,22 @@ trait Stream[+A] {
 
   def headOption: Option[A] = {
     foldRight(Option.empty[A])((a, _) => Some(a))
+  }
+
+  def map[B](f: A => B): Stream[B] = {
+    foldRight(empty[B])((a, b) => cons(f(a), b))
+  }
+
+  def filter(p: A => Boolean): Stream[A] = {
+    foldRight(empty[A])((a, b) => if (p(a)) cons(a, b) else b)
+  }
+
+  def append[B >: A](bs: => Stream[B]): Stream[B] = {
+    foldRight(bs)((a, b) => cons(a, b))
+  }
+
+  def flatMap[B](f: A => Stream[B]): Stream[B] = {
+    foldRight(empty[B])((a, b) => f(a).append(b))
   }
 
   // 5.7 map, filter, append, flatmap using foldRight. Part of the exercise is
