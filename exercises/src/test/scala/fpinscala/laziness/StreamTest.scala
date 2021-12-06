@@ -91,6 +91,22 @@ class StreamTest extends AnyFlatSpec {
     assert(finiteExpected == finiteActual)
   }
 
+  "Stream" should "handle fibs via unfold" in {
+    assert(Stream.fibsViaUnfold.take(6).toList == List(0, 1, 1, 2, 3, 5))
+  }
+
+  "Stream" should "handle from via unfold" in {
+    assert(Stream.fromViaUnfold(3).take(2).toList == List(3, 4))
+  }
+
+  "Stream" should "handle constant via unfold" in {
+    assert(Stream.constantViaUnfold(3).take(2).toList == List(3, 3))
+  }
+
+  "Stream" should "handle ones via unfold" in {
+    assert(Stream.onesViaUnfold.take(2).toList == List(1, 1))
+  }
+
 //   "Stream" should "handle take N elements via unfold" in {
 //     val stream = Stream(1, 2, 3, 4, 5)
 //     assert(stream.takeViaUnfold(3).toList == List(1, 2, 3))
@@ -106,22 +122,6 @@ class StreamTest extends AnyFlatSpec {
 //     val emptyStream = Stream.empty[Int]
 //     assert(stream.mapViaUnfold(_ + 1).toList == List(2, 3, 4, 5, 6))
 //     assert(emptyStream.mapViaUnfold(_ + 1).toList == List.empty)
-//   }
-
-//   "Stream" should "handle constant via unfold" in {
-//     assert(Stream.constantViaUnfold(3).take(2).toList == List(3, 3))
-//   }
-
-//   "Stream" should "handle from via unfold" in {
-//     assert(Stream.fromViaUnfold(3).take(2).toList == List(3, 4))
-//   }
-
-//   "Stream" should "handle fibs via unfold" in {
-//     assert(Stream.fibsViaUnfold.take(6).toList == List(0, 1, 1, 2, 3, 5))
-//   }
-
-//   "Stream" should "handle ones via unfold" in {
-//     assert(Stream.onesViaUnfold.take(2).toList == List(1, 1))
 //   }
 
 //   "Stream" should "handle zipWith" in {
