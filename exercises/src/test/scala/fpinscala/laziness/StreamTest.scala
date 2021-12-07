@@ -65,7 +65,9 @@ class StreamTest extends AnyFlatSpec {
   "Stream" should "handle flatMap via foldRight" in {
     val stream = Stream(1, 2, 3)
     val emptyStream = Stream.empty[Int]
-    assert(stream.flatMap(x => Stream.apply(x, x)).toList == List(1, 1, 2, 2, 3, 3))
+    assert(
+      stream.flatMap(x => Stream.apply(x, x)).toList == List(1, 1, 2, 2, 3, 3)
+    )
     assert(emptyStream.flatMap(x => Stream.apply(x, x)).toList == List.empty)
   }
 
@@ -86,7 +88,8 @@ class StreamTest extends AnyFlatSpec {
     val infiniteExpected = List(1, 1, 1)
     assert(infiniteExpected == infiniteAcual)
 
-    val finiteActual = Stream.unfold(0)(s => if (s < 5) Some((s, s + 1)) else None).toList
+    val finiteActual =
+      Stream.unfold(0)(s => if (s < 5) Some((s, s + 1)) else None).toList
     val finiteExpected = List(0, 1, 2, 3, 4)
     assert(finiteExpected == finiteActual)
   }
@@ -107,36 +110,36 @@ class StreamTest extends AnyFlatSpec {
     assert(Stream.onesViaUnfold.take(2).toList == List(1, 1))
   }
 
-//   "Stream" should "handle take N elements via unfold" in {
-//     val stream = Stream(1, 2, 3, 4, 5)
-//     assert(stream.takeViaUnfold(3).toList == List(1, 2, 3))
-//   }
+  "Stream" should "handle map via unfold" in {
+    val stream = Stream(1, 2, 3, 4, 5)
+    val emptyStream = Stream.empty[Int]
+    assert(stream.mapViaUnfold(_ + 1).toList == List(2, 3, 4, 5, 6))
+    assert(emptyStream.mapViaUnfold(_ + 1).toList == List.empty)
+  }
 
-//   "Stream" should "handle takeWhile via unfold" in {
-//     val stream = Stream(1, 2, 3, 4, 5)
-//     assert(stream.takeWhileViaUnfold(a => a != 3).toList == List(1, 2))
-//   }
+  "Stream" should "handle take via unfold" in {
+    val stream = Stream(1, 2, 3, 4, 5)
+    assert(stream.takeViaUnfold(3).toList == List(1, 2, 3))
+  }
 
-//   "Stream" should "handle map2 via unfold" in {
-//     val stream = Stream(1, 2, 3, 4, 5)
-//     val emptyStream = Stream.empty[Int]
-//     assert(stream.mapViaUnfold(_ + 1).toList == List(2, 3, 4, 5, 6))
-//     assert(emptyStream.mapViaUnfold(_ + 1).toList == List.empty)
-//   }
+  "Stream" should "handle takeWhile via unfold" in {
+    val stream = Stream(1, 2, 3, 4, 5)
+    assert(stream.takeWhileViaUnfold(a => a != 3).toList == List(1, 2))
+  }
 
-//   "Stream" should "handle zipWith" in {
-//     val stream1 = Stream(1, 2, 3)
-//     val stream2 = Stream(1, 2, 3, 4)
-//     val expected = List(2, 4, 6)
-//     assert(stream1.zipWith(stream2)((a, b) => a + b).toList == expected)
-//   }
+  "Stream" should "handle zipWith" in {
+    val stream1 = Stream(1, 2, 3)
+    val stream2 = Stream(1, 2, 3, 4)
+    val expected = List(2, 4, 6)
+    assert(stream1.zipWith(stream2)((a, b) => a + b).toList == expected)
+  }
 
-//   "Stream" should "handle zipAll" in {
-//     val stream1 = Stream(1, 2, 3)
-//     val stream2 = Stream(1, 2, 3, 4)
-//     val expected = List((Some(1), Some(1)), (Some(2), Some(2)), (Some(3), Some(3)), (None, Some(4)))
-//     assert(stream1.zipAll(stream2).toList == expected)
-//   }
+  "Stream" should "handle zipAll" in {
+    val stream1 = Stream(1, 2, 3)
+    val stream2 = Stream(1, 2, 3, 4)
+    val expected = List((Some(1), Some(1)), (Some(2), Some(2)), (Some(3), Some(3)), (None, Some(4)))
+    assert(stream1.zipAll(stream2).toList == expected)
+  }
 
 //   "Stream" should "handle startsWith" in {
 //     val stream1 = Stream(1, 2, 3)
