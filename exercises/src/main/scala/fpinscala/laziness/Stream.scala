@@ -93,8 +93,6 @@ trait Stream[+A] {
   // 5.7 map, filter, append, flatmap using foldRight. Part of the exercise is
   // writing your own function signatures.
 
-  def startsWith[B](s: Stream[B]): Boolean = ???
-
   def mapViaUnfold[B](f: A => B): Stream[B] = {
     unfold(this) {
       case Cons(h, t) => Some((f(h()), t()))
@@ -133,6 +131,15 @@ trait Stream[+A] {
       case (Cons(h1, t1), Cons(h2, t2)) =>
         Some(((Some(h1()), Some(h2())), (t1(), t2())))
     }
+  }
+
+  def startsWith[B >: A](s: Stream[B]): Boolean = {
+    zipAll(s).foldRight(true)((a, b) => a match {
+      case (Some(h1), Some(h2)) => h1 == h2 && b
+      case (None, None) => true
+      case (Some(_), None) => true
+      case (None, Some(_)) => false
+    })
   }
 }
 case object Empty extends Stream[Nothing]
