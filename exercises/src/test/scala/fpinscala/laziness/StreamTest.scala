@@ -137,7 +137,12 @@ class StreamTest extends AnyFlatSpec {
   "Stream" should "handle zipAll" in {
     val stream1 = Stream(1, 2, 3)
     val stream2 = Stream(1, 2, 3, 4)
-    val expected = List((Some(1), Some(1)), (Some(2), Some(2)), (Some(3), Some(3)), (None, Some(4)))
+    val expected = List(
+      (Some(1), Some(1)),
+      (Some(2), Some(2)),
+      (Some(3), Some(3)),
+      (None, Some(4)),
+    )
     assert(stream1.zipAll(stream2).toList == expected)
   }
 
@@ -152,11 +157,11 @@ class StreamTest extends AnyFlatSpec {
     assert(!stream1.startsWith(stream4))
   }
 
-//   "Stream" should "handle tails" in {
-//     val stream1 = Stream(1, 2, 3)
-//     val expected = List(List(1, 2, 3), List(2, 3), List(3), List())
-//     assert(stream1.tails.map(s => s.toList).toList == expected)
-//   }
+  "Stream" should "handle tails" in {
+    val stream1 = Stream(1, 2, 3)
+    val expected = List(List(1, 2, 3), List(2, 3), List(3), List())
+    assert(stream1.tails.map(s => s.toList).toList == expected)
+  }
 
 //   "Stream" should "handle scanRight" in {
 //     val stream1 = Stream(1, 2, 3)
