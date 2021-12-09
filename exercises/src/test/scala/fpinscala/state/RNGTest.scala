@@ -28,11 +28,11 @@ class StateTest extends AnyFlatSpec {
     assert(double1 != double2 && double1 != double3 && double3 != double2)
   }
 
-//   "RNG#ints" should "return list of ints" in {
-//     val expectedLength = 5
-//     val (res, _) = RNG.ints(expectedLength)(RNG.Simple(0))
-//     assert(res.length == expectedLength)
-//   }
+  "RNG#ints" should "return list of ints" in {
+    val expectedLength = 5
+    val (res, _) = RNG.ints(expectedLength)(RNG.Simple(0))
+    assert(res.length == expectedLength)
+  }
 
 //   "RNG@doubleViaMap" should "return double from the interval [0, 1)" in {
 //     val (value, _) = RNG.doubleViaMap(RNG.Simple(0))
