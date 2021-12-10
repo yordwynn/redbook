@@ -40,6 +40,10 @@ object RNG {
     ((value.toDouble / Int.MaxValue).abs, state)
   }
 
+  def doubleViaMap(rng: RNG): (Double, RNG) = {
+    map(s => s.nextInt)(a => a.toDouble.abs / Int.MaxValue)(rng)
+  }
+
   def intDouble(rng: RNG): ((Int,Double), RNG) = {
     val (intVal, st1) = rng.nextInt
     val (dblVal, st2) = double(st1)
