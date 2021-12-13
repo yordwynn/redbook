@@ -76,9 +76,22 @@ object RNG {
     go(count, rng, Nil)
   }
 
-  def map2[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = ???
+  def map2[A,B,C](ra: Rand[A], rb: Rand[B])(f: (A, B) => C): Rand[C] = {
+    rng => {
+      val (a, rng1) = ra(rng)
+      val (b, rng2) = rb(rng1)
 
-  def sequence[A](fs: List[Rand[A]]): Rand[List[A]] = ???
+      (f(a, b), rng2)
+    }
+  }
+
+  def sequence[A](fs: List[Rand[A]]): Rand[List[A]] = {
+    fs.foldRight(unit(List.empty[A]))((f, b) => map2(f, b)((fr, br) => fr +: br))
+  }
+
+  def intsViaSequense(count: Int)(rng: RNG): (List[Int], RNG) = {
+    sequence(List.fill[Rand[Int]](count)(r => r.nextInt))(rng)
+  }
 
   def flatMap[A,B](f: Rand[A])(g: A => Rand[B]): Rand[B] = ???
 }
