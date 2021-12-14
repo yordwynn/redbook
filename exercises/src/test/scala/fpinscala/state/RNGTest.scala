@@ -45,6 +45,11 @@ class StateTest extends AnyFlatSpec {
     assert(res.length == expectedLength && rng != RNG.Simple(0))
   }
 
+  "RNG#nonNegativeLessThan" should "work" in {
+    val (expected, state) = RNG.nonNegativeLessThan(10)(RNG.Simple(0))
+    assert(expected >= 0 && expected < 10)
+  }
+
 //   "Machine" should "give me some candies" in {
 //     val expected = (14, 1)
 //     val actions = List(Coin, Turn, Turn, Coin, Turn, Coin, Coin, Turn, Coin, Turn)
