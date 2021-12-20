@@ -50,10 +50,10 @@ class StateTest extends AnyFlatSpec {
     assert(expected >= 0 && expected < 10)
   }
 
-//   "Machine" should "give me some candies" in {
-//     val expected = (14, 1)
-//     val actions = List(Coin, Turn, Turn, Coin, Turn, Coin, Coin, Turn, Coin, Turn)
-//     val (actial, machine) = State.simulateMachine(actions).run(Machine(true, 5, 10))
-//     assert(expected == actial)
-//   }
+  "Machine" should "give me some candies" in {
+    val expected = (14, 1)
+    val actions = List(Coin, Turn, Turn, Coin, Turn, Coin, Coin, Turn, Coin, Turn)
+    val (actial, machine) = State.simulateMachine(actions).run(Machine(false, 5, 10))
+    assert(expected == actial)
+  }
 }
