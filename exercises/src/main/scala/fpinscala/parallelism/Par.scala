@@ -82,6 +82,21 @@ object Par {
   def sequence[A](pars: List[Par[A]]): Par[List[A]] =
     pars.foldRight(unit(List.empty[A]))((b, p) => map2(b, p)((a, b) => a +: b))
 
+  def parMap[A, B](ps: List[A])(f: A => B): Par[List[B]] = fork {
+    val fbs: List[Par[B]] = ps.map(asyncF(f))
+    sequence(fbs)
+  }
+
+  def parFilter[A](as: List[A])(p: A => Boolean): Par[List[A]] = {
+    val pars = parMap(as)(a => if (p(a)) List(a) else List.empty)
+    map(pars)(a => a.flatten)
+  }
+
+    def parFilter2[A](as: List[A])(p: A => Boolean): Par[List[A]] = {
+    val pars = as.map(a => asyncF[A, List[A]](a => if (p(a)) List(a) else List.empty[A])(a))
+    map(sequence(pars))(a => a.flatten)
+  }
+
   def equal[A](e: ExecutorService)(p: Par[A], p2: Par[A]): Boolean =
     p(e).get == p2(e).get
 
