@@ -93,7 +93,7 @@ object Par {
   }
 
     def parFilter2[A](as: List[A])(p: A => Boolean): Par[List[A]] = {
-    val pars = as.map(a => asyncF[A, List[A]](a => if (p(a)) List(a) else List.empty[A])(a))
+    val pars = as.map(asyncF[A, List[A]](a => if (p(a)) List(a) else List.empty[A]))
     map(sequence(pars))(a => a.flatten)
   }
 
