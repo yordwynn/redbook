@@ -167,14 +167,22 @@ object Nonblocking {
             }
         }
 
-    def choiceN[A](p: Par[Int])(ps: List[Par[A]]): Par[A] = ???
+    def choiceN[A](p: Par[Int])(ps: List[Par[A]]): Par[A] = 
+      es =>
+        new Future[A] {
+          private[parallelism] def apply(cb: A => Unit): Unit = 
+            p(es) {
+              n =>
+                eval(es)(ps(n)(es)(cb))
+            }
+        }
 
     def choiceViaChoiceN[A](
       a: Par[Boolean]
     )(ifTrue: Par[A],
       ifFalse: Par[A],
     ): Par[A] =
-      ???
+      choiceN(a.map(b => if(b) 1 else 0))(List(ifFalse, ifTrue))
 
     def choiceMap[K, V](p: Par[K])(ps: Map[K, Par[V]]): Par[V] =
       ???
