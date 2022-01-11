@@ -167,10 +167,10 @@ object Nonblocking {
             }
         }
 
-    def choiceN[A](p: Par[Int])(ps: List[Par[A]]): Par[A] = 
+    def choiceN[A](p: Par[Int])(ps: List[Par[A]]): Par[A] =
       es =>
         new Future[A] {
-          private[parallelism] def apply(cb: A => Unit): Unit = 
+          private[parallelism] def apply(cb: A => Unit): Unit =
             p(es) {
               n =>
                 eval(es)(ps(n)(es)(cb))
@@ -182,10 +182,17 @@ object Nonblocking {
     )(ifTrue: Par[A],
       ifFalse: Par[A],
     ): Par[A] =
-      choiceN(a.map(b => if(b) 1 else 0))(List(ifFalse, ifTrue))
+      choiceN(a.map(b => if (b) 1 else 0))(List(ifFalse, ifTrue))
 
     def choiceMap[K, V](p: Par[K])(ps: Map[K, Par[V]]): Par[V] =
-      ???
+      es =>
+        new Future[V] {
+          private[parallelism] def apply(k: V => Unit): Unit =
+            p(es) {
+              n =>
+                ps(n)(es)(k)
+            }
+        }
 
     // see `Nonblocking.scala` answers file. This function is usually called something else!
     def chooser[A, B](p: Par[A])(f: A => Par[B]): Par[B] =
