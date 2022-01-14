@@ -1,7 +1,6 @@
 package fpinscala.parallelism
 
 import java.util.concurrent.{Callable, CountDownLatch, ExecutorService}
-import java.util.concurrent.atomic.AtomicReference
 import language.implicitConversions
 
 object Nonblocking {
@@ -24,9 +23,10 @@ object Nonblocking {
           1
         ) // A latch which, when decremented, implies that `ref` has the result
       p(es) {
-        a => ref.set(a); latch.countDown
+        a => ref.set(a); latch.countDown()
       } // Asynchronously set the result, and decrement the latch
-      latch.await // Block until the `latch.countDown` is invoked asynchronously
+      latch
+        .await() // Block until the `latch.countDown` is invoked asynchronously
       ref.get // Once we've passed the latch, we know `ref` has been set, and return its value
     }
 
@@ -44,16 +44,16 @@ object Nonblocking {
         )
       try {
         p(es) {
-          a => ref.set(a); latch.countDown
+          a => ref.set(a); latch.countDown()
         }
-        latch.await
+        latch.await()
         Right(ref.get)
       } catch { case e: Throwable => Left(e) }
 
     }
 
     def unit[A](a: A): Par[A] =
-      es =>
+      _ =>
         new Future[A] {
           def apply(cb: A => Unit): Unit =
             cb(a)
@@ -61,7 +61,7 @@ object Nonblocking {
 
     /** A non-strict version of `unit` */
     def delay[A](a: => A): Par[A] =
-      es =>
+      _ =>
         new Future[A] {
           def apply(cb: A => Unit): Unit =
             cb(a)
@@ -80,14 +80,14 @@ object Nonblocking {
       */
     def async[A](f: (A => Unit) => Unit): Par[A] = es =>
       new Future[A] {
-        def apply(k: A => Unit) = f(k)
+        def apply(k: A => Unit): Unit = f(k)
       }
 
     /** Helper function, for evaluating an action asynchronously, using the
       * given `ExecutorService`.
       */
     def eval(es: ExecutorService)(r: => Unit): Unit =
-      es.submit(new Callable[Unit] { def call = r })
+      es.submit(new Callable[Unit] { def call: Unit = r })
 
     def map2[A, B, C](p: Par[A], p2: Par[B])(f: (A, B) => C): Par[C] =
       es =>
@@ -195,17 +195,16 @@ object Nonblocking {
         }
 
     // see `Nonblocking.scala` answers file. This function is usually called something else!
-    def chooser[A, B](p: Par[A])(f: A => Par[B]): Par[B] =
-      ???
+    def chooser[A, B](p: Par[A])(f: A => Par[B]): Par[B] = flatMap(p)(f)
 
     def flatMap[A, B](p: Par[A])(f: A => Par[B]): Par[B] =
-      ???
+      es => (k: B => Unit) => p(es)(a => f(a)(es)(k))
 
     def choiceViaChooser[A](p: Par[Boolean])(f: Par[A], t: Par[A]): Par[A] =
-      ???
+      chooser(p)(a => if (a) t else f)
 
     def choiceNChooser[A](p: Par[Int])(choices: List[Par[A]]): Par[A] =
-      ???
+      chooser(p)(a => choices(a))
 
     def join[A](p: Par[Par[A]]): Par[A] =
       ???
