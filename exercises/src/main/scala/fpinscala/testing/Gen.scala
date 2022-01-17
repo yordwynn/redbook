@@ -6,24 +6,24 @@ import fpinscala.parallelism._
 import fpinscala.parallelism.Par.Par
 import Gen._
 import Prop._
-import java.util.concurrent.{Executors,ExecutorService}
+import java.util.concurrent.{ExecutorService, Executors}
 
 /*
 The library developed in this chapter goes through several iterations. This file is just the
 shell, which you can fill in and modify while working through the chapter.
-*/
+ */
 
-/**
-  * Ex 8.1. Sum has such properties as commutativity, distributivity, and associativity. So, we
-  * shoul check these properties. What is the sum of an empy list.
+/** Ex 8.1. Sum has such properties as commutativity, distributivity, and
+  * associativity. So, we shoul check these properties. What is the sum of an
+  * empy list.
   */
 
-/**
-  * Ex 8.2. The result of a maximum function has to be greater or equal to any element of the 
-  * list. If all elements of a list have the same value the maximum has to be equal to any
-  * element of the list (we can chek the first and the last elements only). If list consists of
-  * the onlt element the maximum has to be equal to the element. What is the maximum of an
-  * empty list? SHould it be None?
+/** Ex 8.2. The result of a maximum function has to be greater or equal to any
+  * element of the list. If all elements of a list have the same value the
+  * maximum has to be equal to any element of the list (we can chek the first
+  * and the last elements only). If list consists of the onlt element the
+  * maximum has to be equal to the element. What is the maximum of an empty
+  * list? SHould it be None?
   */
 
 trait Prop {
@@ -42,20 +42,40 @@ object Prop {
 
 object Gen {
   def unit[A](a: => A): Gen[A] = ???
-
-  def choose(start: Int, stopExclusive: Int): GenState[Int] = new GenState[Int](State(s => {
-    RNG.map(rnd => rnd.nextInt)(i => i % (stopExclusive - start) + start)(s)
-  })) { }
 }
 
 trait Gen[A] {
-  def map[A,B](f: A => B): Gen[B] = ???
-  def flatMap[A,B](f: A => Gen[B]): Gen[B] = ???
+  def map[A, B](f: A => B): Gen[B] = ???
+  def flatMap[A, B](f: A => Gen[B]): Gen[B] = ???
 }
 
-trait SGen[+A] {
+trait SGen[+A] {}
 
+/**
+  * Ex 8.4
+  * Ex 8.5
+  */
+object GenState {
+  case class Gen[A](sample: State[RNG, A])
+
+  object Gen {
+    def choose(start: Int, stopExclusive: Int): Gen[Int] =
+      new Gen[Int](
+        State(
+          s => {
+            RNG.map(rnd => rnd.nextInt)(
+              i => i % (stopExclusive - start) + start
+            )(s)
+          }
+        )
+      ) {}
+
+    def unit[A](a: => A): Gen[A] = new Gen[A](State(s => RNG.unit(a)(s)))
+
+    def boolean: Gen[Boolean] = new Gen[Boolean](State(s => RNG.map(rnd => rnd.nextInt)(i => i % 2 == 0)(s)))
+
+    def listOfN[A](n: Int, g: Gen[A]): Gen[List[A]] = new Gen[List[A]](State(s => {
+      RNG.sequence(List.fill(n)(g.sample.run))(s)
+    }))
+  }
 }
-
-case class GenState[A](sample: State[RNG,A])
-
