@@ -27,9 +27,16 @@ shell, which you can fill in and modify while working through the chapter.
   */
 
 trait Prop {
+  def check: Boolean = ???
+
+  def &&(p: Prop): Prop = AndProp(this, p)
 }
 
 object Prop {
+  case class AndProp(left: Prop, right: Prop) extends Prop {
+    override def check: Boolean = left.check && right.check
+  }
+
   def forAll[A](gen: Gen[A])(f: A => Boolean): Prop = ???
 }
 
