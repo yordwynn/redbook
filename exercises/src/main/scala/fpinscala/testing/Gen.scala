@@ -42,6 +42,10 @@ object Prop {
 
 object Gen {
   def unit[A](a: => A): Gen[A] = ???
+
+  def choose(start: Int, stopExclusive: Int): GenState[Int] = new GenState[Int](State(s => {
+    RNG.map(rnd => rnd.nextInt)(i => i % (stopExclusive - start) + start)(s)
+  })) { }
 }
 
 trait Gen[A] {
@@ -52,4 +56,6 @@ trait Gen[A] {
 trait SGen[+A] {
 
 }
+
+case class GenState[A](sample: State[RNG,A])
 
