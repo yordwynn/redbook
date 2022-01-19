@@ -59,6 +59,14 @@ case class Gen[+A](sample: State[RNG, A]) {
 
   def listOfN(size: Gen[Int]): Gen[List[A]] = 
     size.flatMap(n => Gen.listOfN(n, this))
+
+  def union[A](g1: Gen[A], g2: Gen[A]): Gen[A] =
+    Gen.boolean.flatMap(b => if (b) g1 else g2)
+
+  def weighted[A](g1: (Gen[A],Double), g2: (Gen[A],Double)): Gen[A] = {
+    val weight = g1._2 / (g1._2 + g2._2)
+    Gen.double.flatMap(d => if (d < weight) g1._1 else g2._1)
+  }
 }
 
 object Gen {
@@ -77,6 +85,10 @@ object Gen {
 
   def boolean: Gen[Boolean] = new Gen[Boolean](
     State(s => RNG.map(rnd => rnd.nextInt)(i => i % 2 == 0)(s))
+  )
+
+  def double: Gen[Double] = new Gen[Double](
+    State(RNG.double)
   )
 
   def listOfN[A](n: Int, g: Gen[A]): Gen[List[A]] = new Gen[List[A]](
