@@ -40,42 +40,50 @@ object Prop {
   def forAll[A](gen: Gen[A])(f: A => Boolean): Prop = ???
 }
 
-object Gen {
-  def unit[A](a: => A): Gen[A] = ???
-}
+object StrangeGen {
+  object Gen {
+    def unit[A](a: => A): Gen[A] = ???
+  }
 
-trait Gen[A] {
-  def map[A, B](f: A => B): Gen[B] = ???
-  def flatMap[A, B](f: A => Gen[B]): Gen[B] = ???
+  trait Gen[A] {
+    def map[A, B](f: A => B): Gen[B] = ???
+    def flatMap[A, B](f: A => Gen[B]): Gen[B] = ???
+  }
 }
 
 trait SGen[+A] {}
 
-/**
-  * Ex 8.4
-  * Ex 8.5
-  */
-object GenState {
-  case class Gen[A](sample: State[RNG, A])
+case class Gen[+A](sample: State[RNG, A]) {
+  def flatMap[B](f: A => Gen[B]): Gen[B] = 
+    Gen(sample.flatMap(a => f(a).sample))
 
-  object Gen {
-    def choose(start: Int, stopExclusive: Int): Gen[Int] =
-      new Gen[Int](
-        State(
-          s => {
-            RNG.map(rnd => rnd.nextInt)(
-              i => i % (stopExclusive - start) + start
-            )(s)
-          }
-        )
-      ) {}
+  def listOfN(size: Gen[Int]): Gen[List[A]] = 
+    size.flatMap(n => Gen.listOfN(n, this))
+}
 
-    def unit[A](a: => A): Gen[A] = new Gen[A](State(s => RNG.unit(a)(s)))
+object Gen {
+  def choose(start: Int, stopExclusive: Int): Gen[Int] =
+    new Gen[Int](
+      State(
+        s => {
+          RNG.map(rnd => rnd.nextInt)(i => i % (stopExclusive - start) + start)(
+            s
+          )
+        }
+      )
+    ) {}
 
-    def boolean: Gen[Boolean] = new Gen[Boolean](State(s => RNG.map(rnd => rnd.nextInt)(i => i % 2 == 0)(s)))
+  def unit[A](a: => A): Gen[A] = new Gen[A](State(s => RNG.unit(a)(s)))
 
-    def listOfN[A](n: Int, g: Gen[A]): Gen[List[A]] = new Gen[List[A]](State(s => {
-      RNG.sequence(List.fill(n)(g.sample.run))(s)
-    }))
-  }
+  def boolean: Gen[Boolean] = new Gen[Boolean](
+    State(s => RNG.map(rnd => rnd.nextInt)(i => i % 2 == 0)(s))
+  )
+
+  def listOfN[A](n: Int, g: Gen[A]): Gen[List[A]] = new Gen[List[A]](
+    State(
+      s => {
+        RNG.sequence(List.fill(n)(g.sample.run))(s)
+      }
+    )
+  )
 }
