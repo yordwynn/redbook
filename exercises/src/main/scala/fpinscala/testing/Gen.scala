@@ -28,12 +28,6 @@ shell, which you can fill in and modify while working through the chapter.
   * list? SHould it be None?
   */
 
-// trait Prop {
-//   def check: Boolean = ???
-
-//   def &&(p: Prop): Prop = AndProp(this, p)
-// }
-
 case class Prop(run: (TestCases, RNG) => Result) {
   def &&(p: Prop): Prop = Prop {
     (n, rnd) => run(n, rnd) match {
@@ -51,10 +45,6 @@ case class Prop(run: (TestCases, RNG) => Result) {
 }
 
 object Prop {
-  // case class AndProp(left: Prop, right: Prop) extends Prop {
-  //   override def check: Boolean = left.check && right.check
-  // }
-
   type TestCases = Int
   type SuccessCount = Int
   type FailedCase = String
@@ -92,7 +82,7 @@ object Result {
     extends Result { def isFalsified = true }
 }
 
-trait SGen[+A] {}
+case class SGen[+A](forSize: Int => Gen[A])
 
 case class Gen[+A](sample: State[RNG, A]) {
   def flatMap[B](f: A => Gen[B]): Gen[B] =
@@ -108,6 +98,8 @@ case class Gen[+A](sample: State[RNG, A]) {
     val weight = g1._2 / (g1._2 + g2._2)
     Gen.double.flatMap(d => if (d < weight) g1._1 else g2._1)
   }
+
+  def unsized: SGen[A] = SGen(_ => this)
 }
 
 object Gen {
