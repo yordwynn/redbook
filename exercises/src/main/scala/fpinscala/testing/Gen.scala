@@ -90,10 +90,6 @@ case class SGen[+A](forSize: Int => Gen[A]) {
 
   def map[B](f: A => B): SGen[B] =
     SGen(n => forSize(n).map(f))
-
-  //Lil bit selnsless I think
-  def listOfN(size: SGen[Int]): SGen[List[A]] =
-    SGen(n => forSize(n).listOfN(size.forSize(n)))
 }
 
 object SGen {
@@ -151,4 +147,7 @@ object Gen {
     val weight = g1._2 / (g1._2 + g2._2)
     Gen.double.flatMap(d => if (d < weight) g1._1 else g2._1)
   }
+
+  def listOf[A](g: Gen[A]): SGen[List[A]] =
+    SGen(n => listOfN(n, g))
 }
