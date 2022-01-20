@@ -7,6 +7,8 @@ import fpinscala.parallelism.Par.Par
 import Gen._
 import Prop._
 import java.util.concurrent.{ExecutorService, Executors}
+import fpinscala.testing.Result.Passed
+import fpinscala.testing.Result.Falsified
 
 /*
 The library developed in this chapter goes through several iterations. This file is just the
@@ -26,44 +28,83 @@ shell, which you can fill in and modify while working through the chapter.
   * list? SHould it be None?
   */
 
-trait Prop {
-  def check: Boolean = ???
+// trait Prop {
+//   def check: Boolean = ???
 
-  def &&(p: Prop): Prop = AndProp(this, p)
+//   def &&(p: Prop): Prop = AndProp(this, p)
+// }
+
+case class Prop(run: (TestCases, RNG) => Result) {
+  def &&(p: Prop): Prop = Prop {
+    (n, rnd) => run(n, rnd) match {
+      case Passed => p.run(n, rnd)
+      case f: Falsified => f
+    }
+  }
+
+  def ||(p: Prop): Prop = Prop {
+    (n, rnd) => run(n, rnd) match {
+      case Passed => Passed
+      case f: Falsified => p.run(n, rnd)
+    }
+  }
 }
 
 object Prop {
-  case class AndProp(left: Prop, right: Prop) extends Prop {
-    override def check: Boolean = left.check && right.check
+  // case class AndProp(left: Prop, right: Prop) extends Prop {
+  //   override def check: Boolean = left.check && right.check
+  // }
+
+  type TestCases = Int
+  type SuccessCount = Int
+  type FailedCase = String
+
+  def forAll[A](gen: Gen[A])(f: A => Boolean): Prop = Prop {
+    import Result._
+
+    (n, rng) =>
+      randomStream(gen)(rng)
+        .zip(Stream.from(0)).take(n).map {
+          case (a, i) =>
+            try {
+              if (f(a)) Passed else Falsified(a.toString, i)
+            } catch { case e: Exception => Falsified(buildMsg(a, e), i) }
+        }.find(_.isFalsified).getOrElse(Passed)
   }
 
-  def forAll[A](gen: Gen[A])(f: A => Boolean): Prop = ???
+  def buildMsg[A](s: A, e: Exception): String =
+    s"test case: $s\n" +
+    s"generated an exception: ${e.getMessage}\n" + s"stack trace:\n ${e
+      .getStackTrace.mkString("\n")}"
+
+  def randomStream[A](g: Gen[A])(rng: RNG): Stream[A] =
+    Stream.unfold(rng)(rng => Some(g.sample.run(rng)))
 }
 
-object StrangeGen {
-  object Gen {
-    def unit[A](a: => A): Gen[A] = ???
-  }
+sealed trait Result {
+  def isFalsified: Boolean
+}
 
-  trait Gen[A] {
-    def map[A, B](f: A => B): Gen[B] = ???
-    def flatMap[A, B](f: A => Gen[B]): Gen[B] = ???
-  }
+object Result {
+  case object Passed extends Result { def isFalsified = false }
+
+  case class Falsified(failure: FailedCase, successes: SuccessCount)
+    extends Result { def isFalsified = true }
 }
 
 trait SGen[+A] {}
 
 case class Gen[+A](sample: State[RNG, A]) {
-  def flatMap[B](f: A => Gen[B]): Gen[B] = 
+  def flatMap[B](f: A => Gen[B]): Gen[B] =
     Gen(sample.flatMap(a => f(a).sample))
 
-  def listOfN(size: Gen[Int]): Gen[List[A]] = 
+  def listOfN(size: Gen[Int]): Gen[List[A]] =
     size.flatMap(n => Gen.listOfN(n, this))
 
   def union[A](g1: Gen[A], g2: Gen[A]): Gen[A] =
     Gen.boolean.flatMap(b => if (b) g1 else g2)
 
-  def weighted[A](g1: (Gen[A],Double), g2: (Gen[A],Double)): Gen[A] = {
+  def weighted[A](g1: (Gen[A], Double), g2: (Gen[A], Double)): Gen[A] = {
     val weight = g1._2 / (g1._2 + g2._2)
     Gen.double.flatMap(d => if (d < weight) g1._1 else g2._1)
   }

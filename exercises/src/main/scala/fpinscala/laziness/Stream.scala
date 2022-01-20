@@ -133,6 +133,14 @@ trait Stream[+A] {
     }
   }
 
+  def zip[B](bs: Stream[B]): Stream[(A, B)] = {
+    unfold((this, bs)) {
+      case (Cons(h1, t1), Cons(h2, t2)) =>
+        Some(((h1(), h2()), (t1(), t2())))
+      case _ => None
+    }
+  }
+
   def startsWith[B >: A](s: Stream[B]): Boolean = {
     zipAll(s).foldRight(true)((a, b) => a match {
       case (Some(h1), Some(h2)) => h1 == h2 && b
