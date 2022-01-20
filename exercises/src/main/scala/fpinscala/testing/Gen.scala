@@ -30,17 +30,19 @@ shell, which you can fill in and modify while working through the chapter.
 
 case class Prop(run: (TestCases, RNG) => Result) {
   def &&(p: Prop): Prop = Prop {
-    (n, rnd) => run(n, rnd) match {
-      case Passed => p.run(n, rnd)
-      case f: Falsified => f
-    }
+    (n, rnd) =>
+      run(n, rnd) match {
+        case Passed => p.run(n, rnd)
+        case f: Falsified => f
+      }
   }
 
   def ||(p: Prop): Prop = Prop {
-    (n, rnd) => run(n, rnd) match {
-      case Passed => Passed
-      case f: Falsified => p.run(n, rnd)
-    }
+    (n, rnd) =>
+      run(n, rnd) match {
+        case Passed => Passed
+        case f: Falsified => p.run(n, rnd)
+      }
   }
 }
 
@@ -82,22 +84,32 @@ object Result {
     extends Result { def isFalsified = true }
 }
 
-case class SGen[+A](forSize: Int => Gen[A])
+case class SGen[+A](forSize: Int => Gen[A]) {
+  def flatMap[B](f: A => SGen[B]): SGen[B] =
+    SGen(n => forSize(n).flatMap(a => f(a).forSize(n)))
+
+  def map[B](f: A => B): SGen[B] =
+    SGen(n => forSize(n).map(f))
+
+  //Lil bit selnsless I think
+  def listOfN(size: SGen[Int]): SGen[List[A]] =
+    SGen(n => forSize(n).listOfN(size.forSize(n)))
+}
+
+object SGen {
+  def union[A](g1: SGen[A], g2: SGen[A]): SGen[A] =
+    SGen(n => Gen.union(g1.forSize(n), g2.forSize(n)))
+}
 
 case class Gen[+A](sample: State[RNG, A]) {
   def flatMap[B](f: A => Gen[B]): Gen[B] =
     Gen(sample.flatMap(a => f(a).sample))
 
+  def map[B](f: A => B): Gen[B] =
+    Gen(sample.map(a => f(a)))
+
   def listOfN(size: Gen[Int]): Gen[List[A]] =
     size.flatMap(n => Gen.listOfN(n, this))
-
-  def union[A](g1: Gen[A], g2: Gen[A]): Gen[A] =
-    Gen.boolean.flatMap(b => if (b) g1 else g2)
-
-  def weighted[A](g1: (Gen[A], Double), g2: (Gen[A], Double)): Gen[A] = {
-    val weight = g1._2 / (g1._2 + g2._2)
-    Gen.double.flatMap(d => if (d < weight) g1._1 else g2._1)
-  }
 
   def unsized: SGen[A] = SGen(_ => this)
 }
@@ -131,4 +143,12 @@ object Gen {
       }
     )
   )
+
+  def union[A](g1: Gen[A], g2: Gen[A]): Gen[A] =
+    Gen.boolean.flatMap(b => if (b) g1 else g2)
+
+  def weighted[A](g1: (Gen[A], Double), g2: (Gen[A], Double)): Gen[A] = {
+    val weight = g1._2 / (g1._2 + g2._2)
+    Gen.double.flatMap(d => if (d < weight) g1._1 else g2._1)
+  }
 }
