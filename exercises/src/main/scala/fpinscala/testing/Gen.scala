@@ -186,7 +186,7 @@ object Gen {
     SGen(n => listOfN(n, g))
 
   def listOf1[A](g: Gen[A]): SGen[List[A]] =
-    SGen(n => if (n == 0) listOfN(1, g) else listOfN(n, g))
+    SGen(n => listOfN(n.max(1), g))
 }
 
 object Tests {
