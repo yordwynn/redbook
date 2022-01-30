@@ -197,4 +197,16 @@ object Tests {
       val max = ns.max
       !ns.exists(_ > max)
   }
+
+  val sortedProp = forAll(listOf(smallInt)) {
+    ns =>
+      val sorted = ns.sorted
+
+      if (ns.isEmpty || ns.size == 1)
+        true
+      else
+        sorted.tail.zipWithIndex.forall {
+          case (n, i) => n >= sorted(i)
+        }
+  }
 }
