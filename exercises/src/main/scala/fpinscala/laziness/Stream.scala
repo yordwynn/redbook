@@ -2,6 +2,7 @@ package fpinscala.laziness
 
 import Stream._
 import scala.annotation.tailrec
+
 trait Stream[+A] {
   def foldRight[B](
     z: => B

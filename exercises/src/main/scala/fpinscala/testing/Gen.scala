@@ -28,20 +28,20 @@ shell, which you can fill in and modify while working through the chapter.
   * list? SHould it be None?
   */
 
-case class Prop(run: (TestCases, RNG) => Result) {
+case class Prop(run: (MaxSize, TestCases, RNG) => Result) {
   def &&(p: Prop): Prop = Prop {
-    (n, rnd) =>
-      run(n, rnd) match {
-        case Passed => p.run(n, rnd)
+    (max, n, rnd) =>
+      run(max, n, rnd) match {
+        case Passed => p.run(max, n, rnd)
         case f: Falsified => f
       }
   }
 
   def ||(p: Prop): Prop = Prop {
-    (n, rnd) =>
-      run(n, rnd) match {
+    (max, n, rnd) =>
+      run(max, n, rnd) match {
         case Passed => Passed
-        case f: Falsified => p.run(n, rnd)
+        case f: Falsified => p.run(max, n, rnd)
       }
   }
 }
@@ -50,11 +50,14 @@ object Prop {
   type TestCases = Int
   type SuccessCount = Int
   type FailedCase = String
+  type MaxSize = Int
+
+  def forAll[A](g: SGen[A])(f: A => Boolean): Prop = forAll(g.forSize)(f)
 
   def forAll[A](gen: Gen[A])(f: A => Boolean): Prop = Prop {
     import Result._
 
-    (n, rng) =>
+    (max, n, rng) =>
       randomStream(gen)(rng)
         .zip(Stream.from(0)).take(n).map {
           case (a, i) =>
@@ -64,6 +67,23 @@ object Prop {
         }.find(_.isFalsified).getOrElse(Passed)
   }
 
+  def forAll[A](g: Int => Gen[A])(f: A => Boolean): Prop = Prop {
+    (max, n, rng) =>
+      val casesPerSize = (n + (max - 1)) / max
+      val props: Stream[Prop] =
+        Stream.from(0).take((n min max) + 1).map(i => forAll(g(i))(f))
+      val prop: Prop =
+        props
+          .map(
+            p =>
+              Prop {
+                (max, _, rng) =>
+                  p.run(max, casesPerSize, rng)
+              }
+          ).toList.reduce(_ && _)
+      prop.run(max, n, rng)
+  }
+
   def buildMsg[A](s: A, e: Exception): String =
     s"test case: $s\n" +
     s"generated an exception: ${e.getMessage}\n" + s"stack trace:\n ${e
@@ -71,6 +91,20 @@ object Prop {
 
   def randomStream[A](g: Gen[A])(rng: RNG): Stream[A] =
     Stream.unfold(rng)(rng => Some(g.sample.run(rng)))
+
+  def run(
+    p: Prop,
+    maxSize: Int = 100,
+    testCases: Int = 100,
+    rng: RNG = RNG.Simple(System.currentTimeMillis),
+  ): Boolean = p.run(maxSize, testCases, rng) match {
+    case Falsified(msg, n) =>
+      println(s"! Falsified after $n passed tests:\n $msg")
+      false
+    case Passed =>
+      println(s"+ OK, passed $testCases tests.")
+      true
+  }
 }
 
 sealed trait Result {
@@ -150,4 +184,17 @@ object Gen {
 
   def listOf[A](g: Gen[A]): SGen[List[A]] =
     SGen(n => listOfN(n, g))
+
+  def listOf1[A](g: Gen[A]): SGen[List[A]] =
+    SGen(n => if (n == 0) listOfN(1, g) else listOfN(n, g))
+}
+
+object Tests {
+  val smallInt = Gen.choose(-10, 10)
+
+  val maxProp = forAll(listOf1(smallInt)) {
+    ns =>
+      val max = ns.max
+      !ns.exists(_ > max)
+  }
 }
