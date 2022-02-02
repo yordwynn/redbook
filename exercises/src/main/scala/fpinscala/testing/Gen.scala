@@ -217,15 +217,22 @@ object Gen {
     SGen(n => listOfN(n.max(1), g))
 
   def nestedPar[A](g: Gen[A], f: Gen[(A, A) => A]): Gen[Par[A]] = {
-    weighted(
-      g.map(Par.unit(_)) -> 0.75,
-      nestedPar(g, f).flatMap(
-        p1 =>
-          nestedPar(g, f).flatMap(
-            p2 => f.map(func => Par.fork(Par.map2(p1, p2)(func)))
-          )
-      ) -> 0.25,
-    )
+    def go(size: Int, res: Gen[Par[A]]): Gen[Par[A]] = {
+      if (size == 0)
+        res
+      else
+        weighted(
+          res -> 0.75,
+          go(size - 1, g.map(Par.unit(_))).flatMap(
+            p1 =>
+              res.flatMap(
+                p2 => f.map(func => Par.fork(Par.map2(p1, p2)(func)))
+              )
+          ) -> 0.25,
+        )
+    }
+
+    choose(0, 100).flatMap(n => go(n, g.map(Par.unit(_))))
   }
 
   lazy val pint2: Gen[Par[Int]] = choose(-100, 100)
