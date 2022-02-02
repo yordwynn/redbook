@@ -114,14 +114,20 @@ object Prop {
   def check(p: => Boolean): Prop = Prop {
     (_, _, _) => if (p) Result.Proved else Falsified("()", 0)
   }
-
+    
   val S = weighted(
-    choose(1,4).map(Executors.newFixedThreadPool) -> .75,
-    unit(Executors.newCachedThreadPool) -> .25
+    choose(1, 4).map(Executors.newFixedThreadPool) -> .75,
+    unit(Executors.newCachedThreadPool) -> .25,
   )
 
-  def forAllPar[A](g: Gen[A])(f: A => Par[Boolean]): Prop = 
-    forAll(S.map2(g)((_,_))) { case (s,a) => f(a)(s).get }
+  def forAllPar[A](g: Gen[A])(f: A => Par[Boolean]): Prop =
+    forAll(S.map2(g)((_, _))) { case (s, a) => f(a)(s).get }
+
+    def checkPar(p: Par[Boolean]): Prop = Prop {
+      (_, _, rnd) =>
+        val (es, _) = S.sample.run(rnd)
+        if (p(es).get()) Result.Proved else Falsified("()", 0)
+    }
 }
 
 sealed trait Result {
@@ -213,7 +219,10 @@ object Gen {
   def nestedPar[A](g: Gen[A], f: Gen[(A, A) => A]): Gen[Par[A]] = {
     weighted(
       g.map(Par.unit(_)) -> 0.75,
-      nestedPar(g, f).flatMap(p1 => nestedPar(g, f).flatMap(p2 => f.map(func => Par.map2(p1, p2)(func)))) -> 0.25,
+      nestedPar(g, f).flatMap(
+        p1 =>
+          nestedPar(g, f).flatMap(p2 => f.map(func => Par.map2(p1, p2)(func)))
+      ) -> 0.25,
     )
   }
 }
@@ -237,5 +246,17 @@ object Tests {
         sorted.tail.zipWithIndex.forall {
           case (n, i) => n >= sorted(i)
         }
+  }
+
+  val p2 = checkPar {
+    Par.equal(
+      Par.map(Par.unit(1))(_ + 1),
+      Par.unit(2),
+    )
+  }
+
+  val frk = {
+    val p = Gen.nestedPar(Gen.choose(0, 10), Gen.unit((a: Int, b: Int) => a + b))
+    forAllPar(p)(n => Par.equal(Par.fork(n), n))
   }
 }
