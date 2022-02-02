@@ -34,6 +34,7 @@ case class Prop(run: (MaxSize, TestCases, RNG) => Result) {
       run(max, n, rnd) match {
         case Passed => p.run(max, n, rnd)
         case f: Falsified => f
+        case Result.Proved => p.run(max, n, rnd)
       }
   }
 
@@ -41,6 +42,7 @@ case class Prop(run: (MaxSize, TestCases, RNG) => Result) {
     (max, n, rnd) =>
       run(max, n, rnd) match {
         case Passed => Passed
+        case Result.Proved => Result.Proved
         case f: Falsified => p.run(max, n, rnd)
       }
   }
@@ -104,7 +106,22 @@ object Prop {
     case Passed =>
       println(s"+ OK, passed $testCases tests.")
       true
+    case Result.Proved =>
+      println(s"+ OK, proved property.")
+      true
   }
+
+  def check(p: => Boolean): Prop = Prop {
+    (_, _, _) => if (p) Result.Proved else Falsified("()", 0)
+  }
+
+  val S = weighted(
+    choose(1,4).map(Executors.newFixedThreadPool) -> .75,
+    unit(Executors.newCachedThreadPool) -> .25
+  )
+
+  def forAllPar[A](g: Gen[A])(f: A => Par[Boolean]): Prop = 
+    forAll(S.map2(g)((_,_))) { case (s,a) => f(a)(s).get }
 }
 
 sealed trait Result {
@@ -116,6 +133,8 @@ object Result {
 
   case class Falsified(failure: FailedCase, successes: SuccessCount)
     extends Result { def isFalsified = true }
+
+  case object Proved extends Result { def isFalsified: Boolean = false }
 }
 
 case class SGen[+A](forSize: Int => Gen[A]) {
@@ -142,6 +161,9 @@ case class Gen[+A](sample: State[RNG, A]) {
     size.flatMap(n => Gen.listOfN(n, this))
 
   def unsized: SGen[A] = SGen(_ => this)
+
+  def map2[B, C](g: Gen[B])(f: (A, B) => C): Gen[C] =
+    Gen(sample.flatMap(a => g.sample.map(b => f(a, b))))
 }
 
 object Gen {
@@ -187,6 +209,13 @@ object Gen {
 
   def listOf1[A](g: Gen[A]): SGen[List[A]] =
     SGen(n => listOfN(n.max(1), g))
+
+  def nestedPar[A](g: Gen[A], f: Gen[(A, A) => A]): Gen[Par[A]] = {
+    weighted(
+      g.map(Par.unit(_)) -> 0.75,
+      nestedPar(g, f).flatMap(p1 => nestedPar(g, f).flatMap(p2 => f.map(func => Par.map2(p1, p2)(func)))) -> 0.25,
+    )
+  }
 }
 
 object Tests {
