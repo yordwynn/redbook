@@ -114,7 +114,7 @@ object Prop {
   def check(p: => Boolean): Prop = Prop {
     (_, _, _) => if (p) Result.Proved else Falsified("()", 0)
   }
-    
+
   val S = weighted(
     choose(1, 4).map(Executors.newFixedThreadPool) -> .75,
     unit(Executors.newCachedThreadPool) -> .25,
@@ -123,11 +123,11 @@ object Prop {
   def forAllPar[A](g: Gen[A])(f: A => Par[Boolean]): Prop =
     forAll(S.map2(g)((_, _))) { case (s, a) => f(a)(s).get }
 
-    def checkPar(p: Par[Boolean]): Prop = Prop {
-      (_, _, rnd) =>
-        val (es, _) = S.sample.run(rnd)
-        if (p(es).get()) Result.Proved else Falsified("()", 0)
-    }
+  def checkPar(p: Par[Boolean]): Prop = Prop {
+    (_, _, rnd) =>
+      val (es, _) = S.sample.run(rnd)
+      if (p(es).get()) Result.Proved else Falsified("()", 0)
+  }
 }
 
 sealed trait Result {
@@ -221,10 +221,20 @@ object Gen {
       g.map(Par.unit(_)) -> 0.75,
       nestedPar(g, f).flatMap(
         p1 =>
-          nestedPar(g, f).flatMap(p2 => f.map(func => Par.map2(p1, p2)(func)))
+          nestedPar(g, f).flatMap(
+            p2 => f.map(func => Par.fork(Par.map2(p1, p2)(func)))
+          )
       ) -> 0.25,
     )
   }
+
+  lazy val pint2: Gen[Par[Int]] = choose(-100, 100)
+    .listOfN(choose(0, 20)).map(
+      l =>
+        l.foldLeft(Par.unit(0))(
+          (p, i) => Par.fork(Par.map2(p, Par.unit(i))(_ + _))
+        )
+    )
 }
 
 object Tests {
@@ -256,7 +266,8 @@ object Tests {
   }
 
   val frk = {
-    val p = Gen.nestedPar(Gen.choose(0, 10), Gen.unit((a: Int, b: Int) => a + b))
+    val p =
+      Gen.nestedPar(Gen.choose(0, 10), Gen.unit((a: Int, b: Int) => a + b))
     forAllPar(p)(n => Par.equal(Par.fork(n), n))
   }
 }
